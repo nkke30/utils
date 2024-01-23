@@ -4,12 +4,9 @@
   "type": "project",
   "license": "MIT",
   "autoload": {
-    "psr-4": {
-      "App\\": "src/"
-    },
-    "files": [
-      "src/utils/Base.php"
-    ]
+      "psr-4": {
+            "Nickimbo\\Utils\\": "src/"
+      }
   },
   "authors": [
     {
