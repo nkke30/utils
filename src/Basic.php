@@ -4,7 +4,7 @@ namespace Nickimbo\Utils;
 
 
 class Basic {
-    static public function string(string &$Str, array ...$Repl): string {
+    static public function string(string $Str, array ...$Repl): string {
         return $Str;
     }
     static public function find(mixed $needle, array | object $haystack, int $type = 0): array {
