@@ -8,7 +8,7 @@
       "App\\": "src/"
     },
     "files": [
-      "utils/Base.php"
+      "src/utils/Base.php"
     ]
   },
   "authors": [
