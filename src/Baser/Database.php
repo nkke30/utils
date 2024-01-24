@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nickimbo\Utils;
+namespace Nickimbo\Utils\Baser;
 
 use PDO;
 use PDOException;
