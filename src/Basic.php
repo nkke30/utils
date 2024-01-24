@@ -26,7 +26,7 @@ class Basic {
         if(!in_array($type, [0, 1])) return ['errors' => [
             'Function argument[2] (Type) is different than available options (0, 1)
             0 = String contains;
-            1 = String matches exactly;'
+            1 = String matches;'
         ]];
         $Ret = [
             'Key' => 0,
