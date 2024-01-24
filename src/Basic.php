@@ -65,9 +65,9 @@ class Basic {
         if (gettype($Args[0]) === 'array') {
             return UTILS_CURRENT_URL . '?' . http_build_query($Args[0]);
         } else {
-            if($Args[1]) {
+            if(isset($Args[1])) {
                 if(gettype($Args[1]) === 'array') {
-                    if(!$Args[2]) return $Args[0] . '?' . http_build_query($Args[1]);
+                    if(!isset($Args[2])) return $Args[0] . '?' . http_build_query($Args[1]);
                     else return vsprintf(castString('{}', '\\', $Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
                 }
             }
