@@ -20,7 +20,7 @@ class Basic {
 
     private $EncryptMethod;
 
-    static public function loadConfig(array $Settings) {
+    public function loadConfig(array $Settings) {
         $this->Key = substr(hash('sha256', $Settings['key']), 0, 32);
         $this->IV = substr(hash('sha256', $Settings['iv']), 0, 16);
         $this->EncryptMethod = $Settings['method'];
@@ -187,10 +187,10 @@ class Basic {
         }
         return $metaData;
     }
-    static public function Hash(string $needle): string {
+    public function Hash(string $needle): string {
         return base64_encode(openssl_encrypt(bin2hex($needle), $this->EncryptMethod, $this->Key, 0, $this->IV));
     }
-    static public function DeHash(string $needle): ?string {
+    public function DeHash(string $needle): ?string {
         return openssl_decrypt(base64_decode(hex2bin($needle)), $this->EncryptMethod, $this->Key, 0, $this->IV);
     }
 }
