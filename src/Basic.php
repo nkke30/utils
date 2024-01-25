@@ -13,6 +13,18 @@ define('FALSE_PARSE', 0x4227);
 
 function castString($delimiter,$escaper,$text){$d=preg_quote($delimiter,"~");$e=preg_quote($escaper,"~");$tokens=preg_split('~'.$e.'('.$e.'|'.$d.')(*SKIP)(*FAIL)|(?<='.$d.')~',$text,-1,PREG_SPLIT_NO_EMPTY);$escaperReplacement=str_replace(['\\','$'],['\\\\','\\$'],$escaper);$delimiterReplacement=str_replace(['\\','$'],['\\\\','\\$'],$delimiter);return implode(preg_replace(['~\\\\.(*SKIP)(*FAIL)|'.($escaper.$delimiter).'~s','~'.$e.$d.'~'],['%s',$delimiterReplacement],$tokens));}
 class Basic {
+
+    private $Key;
+
+    private $IV;
+
+    private $EncryptMethod;
+
+    function __construct(array $Settings) {
+        $this->Key = substr(hash('sha256', $Settings['key']), 0, 32);
+        $this->IV = substr(hash('sha256', $Settings['iv']), 0, 16);
+        $this->EncryptMethod = $Settings['method'];
+    }
     static public function String(string|array $haystack, string|number|bool ...$Args): string|null {
         $Args = array_map('strval', $Args);
         if(gettype($haystack) === 'array') {
@@ -173,6 +185,12 @@ class Basic {
             }
         }
         return $metaData;
+    }
+    public function Hash(string $needle): string {
+        return base64_encode(openssl_encrypt(bin2hex($needle), $this->EncryptMethod, $this->Key, 0, $this->IV));
+    }
+    public function DeHash(string $needle): ?string {
+        return openssl_decrypt(base64_decode(hex2bin($needle)), $this->EncryptMethod, $this->Key, 0, $this->IV);
     }
 }
 ?>
