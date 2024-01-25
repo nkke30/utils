@@ -93,12 +93,12 @@ class Basic {
         $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
         $O = strtolower(strval(gettype($haystack)));
         
-        echo $forceType;
+
         if($T === $O) return $haystack;
 
         switch($T):
             case 'object':
-                if($forceType === 'json') return json_validate($haystack) ? json_decode($haystack) : FALSE_PARSE;
+                if($forceType === 'json') return json_validate($haystack) ? json_decode($haystack, 1) : FALSE_PARSE;
                 return (object)$haystack;
             case 'boolean':
                 return boolval($haystack);
