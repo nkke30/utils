@@ -144,7 +144,7 @@ class Basic {
         foreach ($Args as $currentDir) {
             if(!realpath($currentDir) OR !is_dir($currentDir)) {
                 $metaData['skipped']['directories'][] = [
-                    'Path' => $currentArg,
+                    'Path' => $currentDir,
                     'Reason' => 'Path is not a directory or does not exist.'
                 ];
                 continue;
