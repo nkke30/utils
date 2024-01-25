@@ -149,8 +149,7 @@ class Basic {
                 ];
                 continue;
             };
-            $GD = scandir($currentDir);
-            $metaData['nigga'] = $GD;
+            $GD = array_diff(scandir($currentDir), ['.', '..']);
             if (sizeof($GD) === 0) {
                 $metaData['skipped']['directories'][] = [
                     'Path' => $currentDir,
@@ -158,14 +157,17 @@ class Basic {
                 ];
                 continue;
             }
-            foreach ($GD as $currentFile) {
-                if(!str_ends_with($currentFile, '.php')) {
+            $GD = array_filter($GD, function($File) use(&$metaData) {
+                if(!str_ends_with($File, '.php')) {
                     $metaData['skipped']['files'] = [
-                        'File' => $currentFile,
+                        'File' => $File,
                         'Reason' => 'File is not an PHP File.' 
                     ];
-                    continue 2;
+                    return false;
                 }
+                return true;
+            });
+            foreach ($GD as $currentFile) {
                 require($currentDir . $currentFile);
                 $metaData['required'][] = $currentDir . $currentFile;
             }
