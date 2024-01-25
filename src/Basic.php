@@ -150,7 +150,7 @@ class Basic {
                 continue;
             };
             $GD = scandir($currentDir);
-            $metaData['nigga'] = sizeof($GD);
+            $metaData['nigga'] = $GD;
             if (sizeof($GD) === 0) {
                 $metaData['skipped']['directories'][] = [
                     'Path' => $currentDir,
