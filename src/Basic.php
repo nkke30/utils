@@ -103,29 +103,73 @@ class Basic {
                 return 'unknown';
         endswitch;
     }
-}
-
-
-class Parse {
-    protected $type;
-
-    protected $var;
-
-    protected $parsed;
-
-    function __construct(mixed $haystack, string $forceType = 'json') {
-        $this->type = strtolower(strval(gettype($haystack)));
-        $this->var = $haystack;
-        $this->parsed = Basic::Parse($haystack, $forceType);
+    static public function RequireMulti(string ...$Args): array {
+        $metaData = [
+            'skipped' => [],
+            'required' => [],
+            'invalid_dir' => []
+        ];
+        $functionArgs = array_filter($Args, function($o, $a) {
+            $isValid = str_ends_with($o, '.php');
+            if(!($isValid === true)) array_push($metaData['skipped'], [
+                'argValue' => $o,
+                'argPlace' => $a
+            ]);
+            return $isValid;
+        }, ARRAY_FILTER_USE_BOTH);
+        foreach($functionArgs as $currentKey => $currentArg) {
+            if(!file_exists($currentArg)) {
+                array_push($metaData['invalid_dir'], [
+                    'argValue' => $currentArg,
+                    'argPlace' => $currentKey
+                ]);
+                return 0;
+            }
+            require_once($currentArg);
+            array_push($metaData['required'], [
+                'argValue' => $currentArg,
+                'argPlace' => $currentKey
+            ]);
+        }
+        return $metaData;
     }
-    public function get(): mixed {
-        return $this->parsed;
-    }
-    public function type(): string {
-        return $this->type;
-    }
-    public function var(): mixed {
-        return $this->var;
+    static public function RequireAll(string ...$Args): array {
+        $metaData = [
+            'skipped' => [
+                'directories' => [],
+                'files' => [] 
+            ],
+            'required' => []
+        ];
+        foreach ($Args as $currentDir) {
+            if(!realpath($currentDir) OR !is_dir($currentDir)) {
+                $metaData['skipped']['directories'][] = [
+                    'Path' => $currentArg,
+                    'Reason' => 'Path is not a directory or does not exist.'
+                ];
+                continue;
+            };
+            $GD = scandir($currentDir);
+            if (sizeof($GD) === 0) {
+                $metaData['skipped']['directories'][] = [
+                    'Path' => $currentDir,
+                    'Reason' => 'No files detected in directory'
+                ];
+                continue;
+            }
+            foreach ($GD as $currentFile) {
+                if(!str_ends_with($currentFile, '.php')) {
+                    $metaData['skipped']['files'] = [
+                        'File' => $currentFile,
+                        'Reason' => 'File is not an PHP File.' 
+                    ];
+                    continue 2;
+                }
+                require($currentDir . $currentFile);
+                $metaData['required'][] = $currentDir . $currentFile;
+            }
+        }
+        return $metaData;
     }
 }
 ?>
