@@ -149,8 +149,8 @@ class Database implements IDatabase
      */
 
     public function __construct(array | stdClass $options)
-    $options = (array)$options;
     {
+        $options = (array)$options;
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
         }
