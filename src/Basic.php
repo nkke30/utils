@@ -74,5 +74,16 @@ class Basic {
         }
         return $Args[0];
     }
+    static public function Parse(mixed $haystack, string $forceType = 'json'): array {
+        $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'object', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : $forceType) : 'object';
+        $P;
+        switch($T):
+            case 'object':
+            if($forceType === 'json') {
+                
+            }
+            break;
+        endswitch;
+    }
 }
 ?>
