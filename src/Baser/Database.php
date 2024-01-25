@@ -1634,7 +1634,6 @@ class Database implements IDatabase
         if ($columns === '*') {
             return $stack;
         }
-        if(is_string($columns)) $columns = [$columns];
         foreach ($columns as $key => $value) {
             if (is_int($key)) {
                 preg_match('/([\p{L}_][\p{L}\p{N}@$#\-_]*\.)?(?<column>[\p{L}_][\p{L}\p{N}@$#\-_]*)(?:\s*\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u', $value, $keyMatch);
@@ -2215,7 +2214,7 @@ class Database implements IDatabase
             if ($column === '*') {
                 return $data[0];
             }
-
+            if(is_string($columns)) $columns = [$columns];
             $this->columnMap($columns, $columnMap, true);
             $this->dataMap($data[0], $columns, $columnMap, $currentStack, true, $result);
 
