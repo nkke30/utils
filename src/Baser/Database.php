@@ -148,7 +148,7 @@ class Database implements IDatabase
      * @codeCoverageIgnore
      */
 
-    public function __construct(array | stdClass $options)
+    public function __construct(array | object $options)
     {
         $options = (array)$options;
         if (isset($options['prefix'])) {
