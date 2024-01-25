@@ -143,7 +143,7 @@ class Database implements IDatabase
      * ```
      *
      * @param array $options Connection options
-     * @return \Minichan\Database\Database
+     * @return Nickimbo\Utils\Baser\Database
      * @throws PDOException
      * @codeCoverageIgnore
      */
@@ -683,7 +683,7 @@ class Database implements IDatabase
         if (!preg_match('/^[\p{L}_][\p{L}\p{N}@$#\-_]*(\.?[\p{L}_][\p{L}\p{N}@$#\-_]*)?$/u', $column)) {
             throw new InvalidArgumentException("Incorrect column name: {$column}.");
         }
-
+        if($column[-1] === '`' && $column[0] === '`') return $column;
         return strpos($column, '.') !== false ?
             '"' . $this->prefix . str_replace('.', '"."', $column) . '"' :
             '"' . $column . '"';
@@ -2199,7 +2199,6 @@ class Database implements IDatabase
         }
 
         $isSingle = (is_string($column) && $column !== '*');
-        die($this->selectContext($table, $map, $join, $columns, $where));
         $query = $this->exec($this->selectContext($table, $map, $join, $columns, $where), $map);
 
         if (!$this->statement) {
