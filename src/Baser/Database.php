@@ -2199,6 +2199,7 @@ class Database implements IDatabase
         }
 
         $isSingle = (is_string($column) && $column !== '*');
+        die(print_r($columns));
         $query = $this->exec($this->selectContext($table, $map, $join, $columns, $where), $map);
 
         if (!$this->statement) {
