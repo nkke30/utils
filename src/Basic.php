@@ -92,7 +92,8 @@ class Basic {
     static public function Parse(mixed $haystack, string $forceType = 'json'): mixed {
         $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
         $O = strtolower(strval(gettype($haystack)));
-
+        
+        echo $forceType;
         if($T === $O) return $haystack;
 
         switch($T):
