@@ -107,7 +107,7 @@ class Basic {
             case 'double':
                 return doubleval($haystack);
             case 'string':
-                return strval($haystack);
+                return is_array($haystack) || is_object($haystack) ? json_encode($haystack) : strval($haystack);
             case 'array':
                 return (array)$haystack;
             case 'null':
@@ -187,11 +187,17 @@ class Basic {
         }
         return $metaData;
     }
+    static public function Headers(?array $Filter, ?array $Replace): array {
+        $Headers = array_map('strtolower', getallheaders());
+        if($Filter) $Headers = array_diff($Headers, $Filter);
+        if($Replace) $Headers = array_replace($Headers, $Replace);
+        return $Headers;
+    }
     public function Hash(string $needle): string {
-        return base64_encode(openssl_encrypt(bin2hex($needle), $this->EncryptMethod, $this->Key, 0, $this->IV));
+        return base64_encode(openssl_encrypt($needle, $this->EncryptMethod, $this->Key, 0, $this->IV));
     }
     public function DeHash(string $needle): ?string {
-        return openssl_decrypt(base64_decode(hex2bin($needle)), $this->EncryptMethod, $this->Key, 0, $this->IV);
+        return openssl_decrypt(base64_decode($needle), $this->EncryptMethod, $this->Key, 0, $this->IV);
     }
 }
 ?>
