@@ -211,7 +211,7 @@ class Headers {
         return (array) $this->Headers;
     }
     public function filter(array $Filter): self {
-        $this->Headers = array_diff_key($this->Headers, array_change_key_case($Filter))
+        $this->Headers = array_diff_key($this->Headers, array_change_key_case($Filter));
         return self;
     }
     public function replace(array $Replace): array {
