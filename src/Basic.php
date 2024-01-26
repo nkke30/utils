@@ -198,14 +198,13 @@ class Basic {
     }
     public function DeHash(string $needle): ?string {
         return openssl_decrypt(base64_decode($needle), $this->EncryptMethod, $this->Key, 0, $this->IV);
-    }
 }
 
 
 class Headers {
     private array $Headers;
     function __construct() {
-        $this->Headers = array_map('strtolower', getallheaders());
+        $this->Headers = array_change_key_case(getallheaders());
     }
     public function get(): array {
         return $this->Headers;
