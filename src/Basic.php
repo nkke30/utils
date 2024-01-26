@@ -210,13 +210,13 @@ class Headers {
     public function get(): array {
         return (array) $this->Headers;
     }
-    public function filter(array $Filter): __CLASS__ {
+    public function filter(array $Filter): self {
         $this->Headers = array_diff_key($this->Headers, array_change_key_case($Filter));
-        return __CLASS__;
+        return $this;
     }
-    public function replace(array $Replace): __CLASS__ {
+    public function replace(array $Replace): self {
         $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
-        return __CLASS__;
+        return $this;
     }
 }
 ?>
