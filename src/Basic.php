@@ -198,6 +198,7 @@ class Basic {
     }
     public function DeHash(string $needle): ?string {
         return openssl_decrypt(base64_decode($needle), $this->EncryptMethod, $this->Key, 0, $this->IV);
+    }
 }
 
 
@@ -210,10 +211,10 @@ class Headers {
         return $this->Headers;
     }
     public function filter(array $Filter): array {
-        return $this->Headers = array_diff($this->Headers, array_map('strtolower', $Filter));
+        return $this->Headers = array_diff($this->Headers, array_change_key_case($Filter));
     }
     public function replace(array $Replace): array {
-        return $this->Headers = array_replace($this->Headers, array_map('strtolower', $Replace));
+        return $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
     }
 }
 ?>
