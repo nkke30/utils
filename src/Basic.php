@@ -210,11 +210,13 @@ class Headers {
     public function get(): array {
         return (array) $this->Headers;
     }
-    public function filter(array $Filter): array {
-        return (array) $this->Headers = array_diff($this->Headers, array_change_key_case($Filter));
+    public function filter(array $Filter): self {
+        $this->Headers = array_diff_key($this->Headers, array_change_key_case($Filter))
+        return self;
     }
     public function replace(array $Replace): array {
-        return (array) $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
+        $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
+        return self;
     }
 }
 ?>
