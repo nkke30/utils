@@ -189,7 +189,7 @@ class Basic {
     }
     static public function Headers(?array $Filter, ?array $Replace): array {
         $Headers = array_map('strtolower', getallheaders());
-        if($Filter) $Headers = array_diff($Headers, $Filter);
+        if($Filter) $Headers = array_diff($Headers, array_map('strtolower', $Filter));
         if($Replace) $Headers = array_replace($Headers, $Replace);
         return $Headers;
     }
@@ -198,6 +198,23 @@ class Basic {
     }
     public function DeHash(string $needle): ?string {
         return openssl_decrypt(base64_decode($needle), $this->EncryptMethod, $this->Key, 0, $this->IV);
+    }
+}
+
+
+class Headers {
+    private array $Headers;
+    function __construct() {
+        $this->Headers = array_map('strtolower', getallheaders());
+    }
+    public function get(): array {
+        return $this->Headers;
+    }
+    public function filter(array $Filter): array {
+        return $this->Headers = array_diff($this->Headers, array_map('strtolower', $Filter));
+    }
+    public function replace(array $Replace): array {
+        return $this->Headers = array_replace($this->Headers, array_map('strtolower', $Replace));
     }
 }
 ?>
