@@ -79,7 +79,7 @@ class Basic {
         }
         return $Args[0];
     }
-    static public function Parse(mixed $haystack, string $forceType = 'json', ?int $Type): mixed {
+    static public function Parse(mixed $haystack, ?string $forceType = 'json', ?int $Type): mixed {
         $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
         $O = strtolower(strval(gettype($haystack)));
         if($T === $O) return $haystack;
@@ -176,8 +176,8 @@ class Basic {
         }
         return $metaData;
     }
-    static public function LoadJSON(string $File, ?int $Type = 1): \array | \stdClass {
-        return Basic::Parse(\file_get_contents($File), 'json', $Type);
+    static public function LoadJSON(string $File, ?int $Type = 1): array | stdClass {
+        return Basic::Parse(file_get_contents($File), 'json', $Type);
     }
 }
 
