@@ -2,6 +2,8 @@
 
 namespace Nickimbo\Utils;
 
+use \stdClass;
+
 define('UTILS_CURRENT_URL', (
     ($_SERVER['REQUEST_SCHEME'] ?? 'http') .
     ('://') . 
@@ -25,7 +27,7 @@ class Basic {
         $this->IV = substr(hash('sha256', $Settings['iv']), 0, 16);
         $this->EncryptMethod = $Settings['method'];
     }
-    static public function String(string|array $haystack, string|number|bool ...$Args): string|null {
+    static public function String(string|array $haystack, string|int|bool ...$Args): string|null {
         $Args = array_map('strval', $Args);
         if(gettype($haystack) === 'array') {
             if(!$haystack['String'] || gettype($haystack['String']) !== 'string') return null;
@@ -74,7 +76,7 @@ class Basic {
         return $Ret;
     }
     static public function Url(
-        string | number | array ...$Args): string | UTILS_CURRENT_URL {
+        string | int | array ...$Args): string {
         if (sizeof($Args) < 1) return UTILS_CURRENT_URL;
 
         if (gettype($Args[0]) === 'array') {
@@ -89,16 +91,14 @@ class Basic {
         }
         return $Args[0];
     }
-    static public function Parse(mixed $haystack, string $forceType = 'json'): mixed {
+    static public function Parse(mixed $haystack, string $forceType = 'json', ?int $Type): mixed {
         $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
         $O = strtolower(strval(gettype($haystack)));
-        
-
         if($T === $O) return $haystack;
 
         switch($T):
             case 'object':
-                if($forceType === 'json') return json_validate($haystack) ? json_decode($haystack, 1) : FALSE_PARSE;
+                if($forceType === 'json') return json_validate($haystack) ? json_decode($haystack, $Type ?? 1) : FALSE_PARSE;
                 return (object)$haystack;
             case 'boolean':
                 return boolval($haystack);
@@ -115,6 +115,7 @@ class Basic {
             case 'unknown type':
                 return 'unknown';
         endswitch;
+        return $haystack;
     }
     static public function RequireMulti(string ...$Args): array {
         $metaData = [
@@ -122,7 +123,7 @@ class Basic {
             'required' => [],
             'invalid_dir' => []
         ];
-        $functionArgs = array_filter($Args, function($o, $a) {
+        $functionArgs = array_filter($Args, function($o, $a) use(&$metaData) {
             $isValid = str_ends_with($o, '.php');
             if(!($isValid === true)) array_push($metaData['skipped'], [
                 'argValue' => $o,
@@ -136,7 +137,7 @@ class Basic {
                     'argValue' => $currentArg,
                     'argPlace' => $currentKey
                 ]);
-                return 0;
+                continue;
             }
             require_once($currentArg);
             array_push($metaData['required'], [
@@ -193,11 +194,8 @@ class Basic {
         if($Replace) $Headers = array_replace($Headers, $Replace);
         return $Headers;
     }
-    public function Hash(string $needle): string {
-        return base64_encode(openssl_encrypt($needle, $this->EncryptMethod, $this->Key, 0, $this->IV));
-    }
-    public function DeHash(string $needle): ?string {
-        return openssl_decrypt(base64_decode($needle), $this->EncryptMethod, $this->Key, 0, $this->IV);
+    static public function LoadJSON(string $File, ?int $Type = 1): \array | \stdClass {
+        return Basic::Parse(\file_get_contents($File), 'json', $Type);
     }
 }
 
