@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+//declare(strict_types=1);
 
 
 namespace Nickimbo\Utils;
@@ -13,7 +13,7 @@ class Stringer {
 
     private string $Method;
 
-    function __construct(string | array | stdClass $Config)  {
+    public function __construct(string | array | stdClass $Config)  {
         if(is_string($Config)) {
             if(!is_file($Config)) throw new \Exception(Basic::String('{} is not a File.', $Config));
             if(!str_ends_with($Config, '.json')) throw new \Exception(Basic::String('{} is not an JSON File.', $Config));
