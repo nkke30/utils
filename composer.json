@@ -6,7 +6,11 @@
   "autoload": {
       "psr-4": {
             "Nickimbo\\Utils\\": "src/"
-      }
+      },
+      "classmap": [
+        "src/Essentials.php",
+        "src/Basic.php"
+      ]
   },
   "authors": [
     {
