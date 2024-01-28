@@ -148,8 +148,14 @@ class Database implements IDatabase
      * @codeCoverageIgnore
      */
 
-    public function __construct(array | object $options)
+    public function __construct(array | object | string $options)
     {
+        if(is_string($options)) {
+            if(!is_file($options)) throw new \Exception(\Nickimbo\Utils\Basic::String('{} is not a File.', $options));
+            if(!str_ends_with($options, '.json')) throw new \Exception(\Nickimbo\Utils\Basic::String('{} is not an JSON File.', $options));
+            if(!file_exists($options)) throw new \Exception(\Nickimbo\Utils\Basic::String('{} does not exist.', $options));
+            $options = \Nickimbo\Utils\Basic::LoadJSON($options, 1);
+        }
         $options = (array)$options;
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
