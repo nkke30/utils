@@ -11,8 +11,7 @@ define('UTILS_CURRENT_URL', (
     ($_SERVER['REQUEST_URI'] ?? '/')
 ));
 
-define('FALSE_PARSE', 0x4227);
-
+define('FALSE_PARSE', 0x4227);  
 function castString($delimiter,$escaper,$text){$d=preg_quote($delimiter,"~");$e=preg_quote($escaper,"~");$tokens=preg_split('~'.$e.'('.$e.'|'.$d.')(*SKIP)(*FAIL)|(?<='.$d.')~',$text,-1,PREG_SPLIT_NO_EMPTY);$escaperReplacement=str_replace(['\\','$'],['\\\\','\\$'],$escaper);$delimiterReplacement=str_replace(['\\','$'],['\\\\','\\$'],$delimiter);return implode(preg_replace(['~\\\\.(*SKIP)(*FAIL)|'.($escaper.$delimiter).'~s','~'.$e.$d.'~'],['%s',$delimiterReplacement],$tokens));}
 class Basic {
     static public function String(string|array $haystack, string|int|bool ...$Args): string|null {
@@ -25,6 +24,9 @@ class Basic {
             $Str = castString('{}', '\\', $haystack);
         }
         return vsprintf($Str, $Args);
+    }
+    static public function AString(array $Args): string|null {
+        return call_user_func_array(['Nickimbo\Utils\Basic', 'String'], $Args);
     }
     static public function Find(mixed $needle, array | object $haystack, int $type = 0): array {
         $haystack = (array) $haystack;
