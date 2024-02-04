@@ -53,7 +53,7 @@ class Response {
 
     public function __construct(array | stdClass $Format, ?array $Options) {
 
-        if(array_search('{{message}}', $Format) === false) throw new \Error("{{message}} value not found when constructing Errors object");
+        //if(array_search('{{message}}', $Format) === false) throw new \Error("{{message}} value not found when constructing Errors object");
 
         $this->format = (array) $Format;
 
@@ -65,7 +65,12 @@ class Response {
 
     private function _Dash(string | array $Message, ?int $Status, ?array $Headers): void {
 
-        if(gettype($Message) === 'string') $Format = unserialize(strtr(serialize($this->format), ['{{message}}' => $Message]));
+
+
+
+        if(gettype($Message) === 'string') {
+            $Format = unserialize(preg_replace('/s:11:"{{message}}"/', 's:' . strlen($Message) . ':"' . $Message . '"', serialize($this->format)));
+        }
         http_response_code($Status ?? $this->status);
 
         if ($this->headers) {
@@ -78,7 +83,7 @@ class Response {
             foreach($Headers as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
         }
 
-        die(json_encode(isset($Format) ? $Format : $Message, JSON_PRETTY_PRINT, JSON_NUMERIC_CHECK, JSON_UNESCAPED_UNICODE));
+        die(json_encode(isset($Format) ? $Format : $Message, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
     }
 
     public function Error(string $Message, ?int $Status, ?array $Headers): void {
