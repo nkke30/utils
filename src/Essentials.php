@@ -51,7 +51,7 @@ class Response {
 
 
 
-    public function __construct(array | stdClass $Format, ?array $Options) {
+    public function __construct(array | stdClass $Format, ?array $Options = null) {
 
         //if(array_search('{{message}}', $Format) === false) throw new \Error("{{message}} value not found when constructing Errors object");
 
@@ -63,14 +63,18 @@ class Response {
         }
     }
 
-    private function _Dash(string | array $Message, ?int $Status, ?array $Headers): void {
+    private function _Dash(string | array $Message, ?int $Status = null, ?array $Headers = null): void {
 
 
 
 
         if(gettype($Message) === 'string') {
-            $Format = unserialize(preg_replace('/s:11:"{{message}}"/', 's:' . strlen($Message) . ':"' . $Message . '"', serialize($this->format)));
+            $Format = unserialize(str_replace(['s:10:"{{status}}"', 's:11:"{{message}}"'], [
+                's:3:"' . ($Status ? $Status : ($this->status ? $this->status : 402)) . '"',
+                's:' . strlen($Message) . ':"' . $Message . '"'
+            ], serialize($this->format)));
         }
+        
         http_response_code($Status ?? $this->status);
 
         if ($this->headers) {
@@ -86,21 +90,28 @@ class Response {
         die(json_encode(isset($Format) ? $Format : $Message, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
     }
 
-    public function Error(string $Message, ?int $Status, ?array $Headers): void {
+    public function Error(string $Message, ?int $Status = null, ?array $Headers = null): void {
 
          $Status = $Status ? ((int) $Status[0] === 4 ? $Status : 403) : 403;
 
          $this->_Dash($Message, $Status, $Headers);
     }
 
-    public function Ok(string $Message, ?int $Status, ?array $Headers): void {
+    public function Ok(string $Message, ?int $Status = null, ?array $Headers = null): void {
         $Status = $Status ? ((int) $Status[0] === 2 ? $Status : 200) : 200;
 
         $this->_Dash($Message, $Status, $Headers);
     }
 
-    public function Response(array $Response, ?int $Status, ?array $Headers): void {
+    public function Response(array $Response, ?int $Status = null, ?array $Headers = null): void {
         $this->_Dash($Response, $Status, $Headers);
     }
 }
+
+
+$Class = new Response(['__out__' => [
+    'message' => '{{message}}',
+    'status' => '{{status}}'
+]]);
+$Class->Error("niggeria bavshvi tooooooooooooooooooooooooooo");
 ?>
