@@ -107,11 +107,4 @@ class Response {
         $this->_Dash($Response, $Status, $Headers);
     }
 }
-
-
-$Class = new Response(['__out__' => [
-    'message' => '{{message}}',
-    'status' => '{{status}}'
-]]);
-$Class->Error("niggeria bavshvi tooooooooooooooooooooooooooo");
 ?>
