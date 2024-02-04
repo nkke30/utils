@@ -69,10 +69,10 @@ class Response {
 
 
         if(gettype($Message) === 'string') {
-            $Format = unserialize(str_replace(['s:10:"{{status}}"', 's:11:"{{message}}"'], [
-                's:3:"' . ($Status ? $Status : ($this->status ? $this->status : 402)) . '"',
-                's:' . strlen($Message) . ':"' . $Message . '"'
-            ], serialize($this->format)));
+            $Format = Basic::Lize($this->format, ['{{status}}', '{{message}}'], [
+                $Status ? $Status : ($this->status ? $this->status : 402),
+                $Message
+            ]);
         }
         
         http_response_code($Status ?? $this->status);

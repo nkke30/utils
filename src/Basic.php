@@ -190,6 +190,34 @@ class Basic {
     static public function LoadJSON(string $File, ?int $Type = 1): array | stdClass {
         return Basic::Parse(file_get_contents($File), 'json', $Type);
     }
+    static public function Lize(array $Array, array | string $Needle, array | string $Replace): array {
+        $Serialized = serialize($Array);
+        $Needles = [];
+        $Replaces = [];
+        $Unserialized = [];
+        if (gettype($Needle) === 'array') {
+            $T = gettype($Replace);
+            foreach($Needle as $Key => $Value) {
+
+                $Needles[] = Basic::String('s:{}:"{}"', strlen($Value), $Value);
+
+                if ($T === 'array') {
+                    if(isset($Replace[$Key])) $Replaces[$Key] = Basic::String('s:{}:"{}"', strlen($Replace[$Key]), $Replace[$Key]);
+                    else $Replaces[$Key] = 's:4:"null"';
+                } else {
+                    $Replaces[$Key] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
+                } 
+            }
+        } else {
+            $Needles[] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
+            $Replaces[] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
+        }
+
+        $Unserialized = unserialize(str_replace($Needles, $Replaces, $Serialized));
+
+
+        return $Unserialized;
+    }
 }
 
 
