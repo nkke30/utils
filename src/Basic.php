@@ -65,6 +65,15 @@ class Basic {
         }
         return $Ret;
     }
+    static public function deepSearch(array $Array, mixed $Needle): array {
+        $Arr = [];
+
+        array_walk($Array, function($Value, $Key) use(&$Arr, $Needle) {
+            if ($Value == $Needle) $Arr[] = $Key;
+        });
+
+        return $Arr;
+    }
     static public function Url(
         string | int | array ...$Args): string {
         if (sizeof($Args) < 1) return UTILS_CURRENT_URL;

@@ -40,4 +40,62 @@ class Stringer {
     }
 }
 
+
+class Response {
+    private array $format;
+
+    private int $status;
+
+    private array $headers;
+
+
+
+
+    public function __construct(array | stdClass $Format, ?array $Options) {
+
+        if(array_search('{{message}}', $Format) === false) throw new \Error("{{message}} value not found when constructing Errors object");
+
+        $this->format = (array) $Format;
+
+        if($Options !== null) {
+            if(isset($Options['headers']) && gettype($Options['headers']) === 'array') $this->headers = $Options['headers'];
+            if(isset($Options['status']) && gettype($Options['status']) === 'int') $this->status = $Options['status'];
+        }
+    }
+
+    private function _Dash(string | array $Message, ?int $Status, ?array $Headers): void {
+
+        if(gettype($Message) === 'string') $Format = unserialize(strtr(serialize($this->format), ['{{message}}' => $Message]));
+        http_response_code($Status ?? $this->status);
+
+        if ($this->headers) {
+            if ($Headers !== null) {
+                foreach(array_merge($this->headers, $Headers) as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
+            } else {
+                foreach($this->headers as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
+            }
+        } elseif($Headers !== null) {
+            foreach($Headers as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
+        }
+
+        die(json_encode(isset($Format) ? $Format : $Message, JSON_PRETTY_PRINT, JSON_NUMERIC_CHECK, JSON_UNESCAPED_UNICODE));
+    }
+
+    public function Error(string $Message, ?int $Status, ?array $Headers): void {
+
+         $Status = $Status ? ((int) $Status[0] === 4 ? $Status : 403) : 403;
+
+         $this->_Dash($Message, $Status, $Headers);
+    }
+
+    public function Ok(string $Message, ?int $Status, ?array $Headers): void {
+        $Status = $Status ? ((int) $Status[0] === 2 ? $Status : 200) : 200;
+
+        $this->_Dash($Message, $Status, $Headers);
+    }
+
+    public function Response(array $Response, ?int $Status, ?array $Headers): void {
+        $this->_Dash($Response, $Status, $Headers);
+    }
+}
 ?>
