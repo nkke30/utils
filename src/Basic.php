@@ -12,18 +12,46 @@ define('UTILS_CURRENT_URL', (
 ));
 
 define('FALSE_PARSE', 0x4227);  
-function castString($delimiter,$escaper,$text){$d=preg_quote($delimiter,"~");$e=preg_quote($escaper,"~");$tokens=preg_split('~'.$e.'('.$e.'|'.$d.')(*SKIP)(*FAIL)|(?<='.$d.')~',$text,-1,PREG_SPLIT_NO_EMPTY);$escaperReplacement=str_replace(['\\','$'],['\\\\','\\$'],$escaper);$delimiterReplacement=str_replace(['\\','$'],['\\\\','\\$'],$delimiter);return implode(preg_replace(['~\\\\.(*SKIP)(*FAIL)|'.($escaper.$delimiter).'~s','~'.$e.$d.'~'],['%s',$delimiterReplacement],$tokens));}
 class Basic {
+    static public function toSprint(string $String, string $Delimiter = '{}', string $Escaper = '\\') {
+        $Delimiter = preg_quote($Delimiter, "~");
+        $Escaper = preg_quote($Escaper, "~");
+    
+        $Tokens = preg_split('~' . $Escaper . '(' . $Escaper . '|' . $Delimiter . ')(*SKIP)(*FAIL)|(?<=' . $Delimiter . ')~', $String, -1, PREG_SPLIT_NO_EMPTY);
+    
+        if (strpos($String, $Delimiter . $Escaper) !== false) {
+            $Tokens = preg_replace(['~\\\\.(*SKIP)(*FAIL)|' . $Escaper . $Delimiter . '~s', '~' . $Escaper . $Delimiter . '~'], ['%s', str_replace(['\\', '$'], ['\\\\', '\\$'], $Delimiter)], $Tokens);
+        }
+    
+        return implode($Tokens);
+    }
     static public function String(string|array $haystack, string|int|bool ...$Args): string|null {
         $Args = array_map('strval', $Args);
         if(gettype($haystack) === 'array') {
             if(!$haystack['String'] || gettype($haystack['String']) !== 'string') return null;
-            $Str = castString($haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\', $haystack['String']);
+            $haystack['String'] = strtr($haystack['String'], [
+                '%METHOD%' => $_SERVER['REQUEST_METHOD'],
+                '%URL%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                '%QUERY%' => $_SERVER['QUERY_STRING'],
+                '%FILE%' => __FILE__,
+                '%LINE%' => __LINE__,
+                '%VERSION%' => phpversion(),
+                '%HOST%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']
+            ]);
+            $String = Basic::toSprint($haystack['String'], $haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\');
         }
         else {
-            $Str = castString('{}', '\\', $haystack);
+            $String = Basic::toSprint(strtr($haystack, [
+                '%METHOD%' => $_SERVER['REQUEST_METHOD'],
+                '%URL%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                '%QUERY%' => $_SERVER['QUERY_STRING'],
+                '%FILE%' => __FILE__,
+                '%LINE%' => __LINE__,
+                '%VERSION%' => phpversion(),
+                '%HOST%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']
+            ]));
         }
-        return vsprintf($Str, $Args);
+        return vsprintf($String, $Args);
     }
     static public function AString(array $Args): string|null {
         return call_user_func_array(['Nickimbo\Utils\Basic', 'String'], $Args);
@@ -84,7 +112,7 @@ class Basic {
             if(isset($Args[1])) {
                 if(gettype($Args[1]) === 'array') {
                     if(!isset($Args[2])) return $Args[0] . '?' . http_build_query($Args[1]);
-                    else return vsprintf(castString('{}', '\\', $Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
+                    else return vsprintf(Basic::toSprint($Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
                 }
             }
         }
