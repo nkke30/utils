@@ -11,44 +11,45 @@ define('UTILS_CURRENT_URL', (
     ($_SERVER['REQUEST_URI'] ?? '/')
 ));
 
+
+define('UTILS_CURRENT_HOST', (
+    ($_SERVER['REQUEST_SCHEME'] ?? 'http') .
+    ('://') . 
+    ($_SERVER['HTTP_HOST'] ?? 'localhost') 
+));
+
 define('FALSE_PARSE', 0x4227);  
 class Basic {
-    static public function toSprint(string $String, string $Delimiter = '{}', string $Escaper = '\\') {
-        $Delimiter = preg_quote($Delimiter, "~");
-        $Escaper = preg_quote($Escaper, "~");
-    
-        $Tokens = preg_split('~' . $Escaper . '(' . $Escaper . '|' . $Delimiter . ')(*SKIP)(*FAIL)|(?<=' . $Delimiter . ')~', $String, -1, PREG_SPLIT_NO_EMPTY);
-    
-        if (strpos($String, $Delimiter . $Escaper) !== false) {
-            $Tokens = preg_replace(['~\\\\.(*SKIP)(*FAIL)|' . $Escaper . $Delimiter . '~s', '~' . $Escaper . $Delimiter . '~'], ['%s', str_replace(['\\', '$'], ['\\\\', '\\$'], $Delimiter)], $Tokens);
-        }
-    
-        return implode($Tokens);
+    public static function toSprintf(string $inputString, string $delimiter = '{}', string $escaper = '\\'): string {
+        return strtr($inputString, [
+            $escaper.$delimiter => $delimiter,
+            $delimiter => '%s'
+        ]);
     }
     static public function String(string|array $haystack, string|int|bool ...$Args): string|null {
         $Args = array_map('strval', $Args);
         if(gettype($haystack) === 'array') {
             if(!$haystack['String'] || gettype($haystack['String']) !== 'string') return null;
             $haystack['String'] = strtr($haystack['String'], [
-                '%METHOD%' => $_SERVER['REQUEST_METHOD'],
-                '%URL%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                '%METHOD%' => $_SERVER['REQUEST_METHOD'] ?? 'local',
+                '%URL%' => UTILS_CURRENT_URL,
                 '%QUERY%' => $_SERVER['QUERY_STRING'],
                 '%FILE%' => __FILE__,
                 '%LINE%' => __LINE__,
                 '%VERSION%' => phpversion(),
-                '%HOST%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']
+                '%HOST%' => UTILS_CURRENT_HOST
             ]);
-            $String = Basic::toSprint($haystack['String'], $haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\');
+            $String = Basic::toSprintf($haystack['String'], $haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\');
         }
         else {
-            $String = Basic::toSprint(strtr($haystack, [
-                '%METHOD%' => $_SERVER['REQUEST_METHOD'],
-                '%URL%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-                '%QUERY%' => $_SERVER['QUERY_STRING'],
+            $String = Basic::toSprintf(strtr($haystack, [
+                '%METHOD%' => $_SERVER['REQUEST_METHOD'] ?? 'local',
+                '%URL%' => UTILS_CURRENT_URL,
+                '%QUERY%' => $_SERVER['QUERY_STRING'] ?? '',
                 '%FILE%' => __FILE__,
                 '%LINE%' => __LINE__,
                 '%VERSION%' => phpversion(),
-                '%HOST%' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']
+                '%HOST%' => UTILS_CURRENT_HOST
             ]));
         }
         return vsprintf($String, $Args);
@@ -112,7 +113,7 @@ class Basic {
             if(isset($Args[1])) {
                 if(gettype($Args[1]) === 'array') {
                     if(!isset($Args[2])) return $Args[0] . '?' . http_build_query($Args[1]);
-                    else return vsprintf(Basic::toSprint($Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
+                    else return vsprintf(Basic::toSprintf($Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
                 }
             }
         }
