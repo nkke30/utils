@@ -68,12 +68,7 @@ class Response {
 
 
 
-        if(gettype($Message) === 'string') {
-            $Format = Basic::ReWalk($this->format, ['{{status}}', '{{message}}'], [
-                $Status ? $Status : ($this->status ? $this->status : 402),
-                $Message
-            ]);
-        }
+        if(gettype($Message) === 'string') $Format = Basic::ReWalk($this->format, ['{{status}}' => $Status ? $Status : ($this->status ? $this->status : 402), '{{message}}' => $Message]);
         
         http_response_code($Status ?? $this->status);
 

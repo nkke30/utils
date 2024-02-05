@@ -247,13 +247,28 @@ class Basic {
 
         return $Unserialized;
     }
-    static public function ReWalk(array $mainArray, array $needlesArray, array $replacementsArray) {
-        array_walk_recursive($mainArray, function (&$value) use ($needlesArray, $replacementsArray) {
-            foreach ($needlesArray as $key => $needle) {
-                $value = str_replace($needle, $replacementsArray[$key], $value);
+    static public function ReWalk(array $mainArray, array $Replacements) {
+        array_walk_recursive($mainArray, function (&$value) use ($Replacements) {
+            foreach ($Replacements as $needle => $replacement) {
+                $value = str_replace($needle, $replacement, $value);
             }
         });
         return $mainArray;
+    }
+    static public function Path($name, $baseDir = __DIR__) {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $item) {
+            $basename = $item->getBasename();
+            if ($basename === $name || $basename === '.' . $name) {
+                return $item->getPathname();
+            }
+        }
+    
+        return null;
     }
 }
 
