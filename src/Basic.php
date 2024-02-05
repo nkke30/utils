@@ -39,10 +39,10 @@ class Basic {
                 '%VERSION%' => phpversion(),
                 '%HOST%' => UTILS_CURRENT_HOST
             ]);
-            $String = Basic::toSprintf($haystack['String'], $haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\');
+            $String = self::toSprintf($haystack['String'], $haystack['Delimiter'] ?? '{}', $haystack['Escaper'] ?? '\\');
         }
         else {
-            $String = Basic::toSprintf(strtr($haystack, [
+            $String = self::toSprintf(strtr($haystack, [
                 '%METHOD%' => $_SERVER['REQUEST_METHOD'] ?? 'local',
                 '%URL%' => UTILS_CURRENT_URL,
                 '%QUERY%' => $_SERVER['QUERY_STRING'] ?? '',
@@ -113,7 +113,7 @@ class Basic {
             if(isset($Args[1])) {
                 if(gettype($Args[1]) === 'array') {
                     if(!isset($Args[2])) return $Args[0] . '?' . http_build_query($Args[1]);
-                    else return vsprintf(Basic::toSprintf($Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
+                    else return vsprintf(self::toSprintf($Args[0]), $Args[1]) . '?' . http_build_query($Args[2]);
                 }
             }
         }
@@ -217,7 +217,7 @@ class Basic {
         return $metaData;
     }
     static public function LoadJSON(string $File, ?int $Type = 1): array | stdClass {
-        return Basic::Parse(file_get_contents($File), 'json', $Type);
+        return self::Parse(file_get_contents($File), 'json', $Type);
     }
     static public function ReLize(array $Array, array | string $Needle, array | string $Replace): array {
         $Serialized = serialize($Array);
@@ -228,18 +228,18 @@ class Basic {
             $T = gettype($Replace);
             foreach($Needle as $Key => $Value) {
 
-                $Needles[] = Basic::String('s:{}:"{}"', strlen($Value), $Value);
+                $Needles[] = self::String('s:{}:"{}"', strlen($Value), $Value);
 
                 if ($T === 'array') {
-                    if(isset($Replace[$Key])) $Replaces[$Key] = Basic::String('s:{}:"{}"', strlen($Replace[$Key]), $Replace[$Key]);
+                    if(isset($Replace[$Key])) $Replaces[$Key] = self::String('s:{}:"{}"', strlen($Replace[$Key]), $Replace[$Key]);
                     else $Replaces[$Key] = 's:4:"null"';
                 } else {
-                    $Replaces[$Key] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
+                    $Replaces[$Key] = self::String('s:{}:"{}"', strlen($Replace), $Replace);
                 } 
             }
         } else {
-            $Needles[] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
-            $Replaces[] = Basic::String('s:{}:"{}"', strlen($Replace), $Replace);
+            $Needles[] = self::String('s:{}:"{}"', strlen($Replace), $Replace);
+            $Replaces[] = self::String('s:{}:"{}"', strlen($Replace), $Replace);
         }
 
         $Unserialized = unserialize(str_replace($Needles, $Replaces, $Serialized));
@@ -255,33 +255,30 @@ class Basic {
         });
         return $mainArray;
     }
-    static public function Path(string $name, string $baseDir = __DIR__): null|array|string {
-
-        echo $baseDir;
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
+    static public function Path(string $name, string $path = '.'): array {
+        $foundPaths = [];
     
-        $matches = [];
+        $path = realpath($path);
     
-        foreach ($iterator as $item) {
-            $relativePath = ltrim($item->getPathname(), $baseDir . DIRECTORY_SEPARATOR);
-            print_r($relativePath.PHP_EOL);
-            if (strpos($relativePath, $name) !== false) {
-                $path = $item->getPathname();
-                $matches[] = $path;
+        if (is_file($path) && $name === basename($path)) {
+            $foundPaths[] = $path;
+        } elseif (is_dir($path)) {
+
+            $dir = opendir($path);
+    
+            while (($entry = readdir($dir)) !== false) {
+                if ($entry != '.' && $entry != '..') {
+                    $entryPath = $path. '/' . $entry;
+                    $foundPaths = array_merge($foundPaths, self::Path($name, $entryPath));
+                }
             }
+    
+            closedir($dir);
         }
-        if (count($matches) === 1) {
-            return $matches[0];
-        } elseif (count($matches) > 1) {
-            return $matches;
-        } else {
-            return null;
-        }
+    
+        return $foundPaths;
     }
+    
 }
 
 
