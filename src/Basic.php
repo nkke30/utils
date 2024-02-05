@@ -255,7 +255,7 @@ class Basic {
         });
         return $mainArray;
     }
-    static public function Path(string $name, string $baseDir = __DIR__): array|string|null {
+    static public function Path(string $name, string $baseDir = __DIR__): null|array|string {
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
@@ -264,21 +264,14 @@ class Basic {
         $matches = [];
     
         foreach ($iterator as $item) {
-            $basename = $item->getBasename();
             $relativePath = ltrim($item->getPathname(), $baseDir . DIRECTORY_SEPARATOR);
-    
-            if ($basename === $name || $relativePath === $name || $relativePath === '.' . $name) {
-                $matches[] = $item->getPathname();
+            if (strpos($relativePath, $name) !== false) {
+                $path = $item->getPathname();
+                $matches[] = $path;
             }
         }
-    
-        if (count($matches) === 1) {
-            return $matches[0]; // Return a string if a single match is found
-        } elseif (count($matches) > 1) {
-            return $matches; // Return an array if multiple matches are found
-        } else {
-            return null; // Return null if no matches are found
-        }
+
+        return count($matches) === 1 ? $matches[0] : (count($matches) > 1 ? $matches : null);
     }
 }
 
@@ -300,4 +293,7 @@ class Headers {
         return $this;
     }
 }
+
+
+echo Basic::Path('src/Baser/Database.php');
 ?>
