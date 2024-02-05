@@ -219,7 +219,7 @@ class Basic {
     static public function LoadJSON(string $File, ?int $Type = 1): array | stdClass {
         return Basic::Parse(file_get_contents($File), 'json', $Type);
     }
-    static public function Lize(array $Array, array | string $Needle, array | string $Replace): array {
+    static public function ReLize(array $Array, array | string $Needle, array | string $Replace): array {
         $Serialized = serialize($Array);
         $Needles = [];
         $Replaces = [];
@@ -246,6 +246,14 @@ class Basic {
 
 
         return $Unserialized;
+    }
+    static public function ReWalk(array $mainArray, array $needlesArray, array $replacementsArray) {
+        array_walk_recursive($mainArray, function (&$value) use ($needlesArray, $replacementsArray) {
+            foreach ($needlesArray as $key => $needle) {
+                $value = str_replace($needle, $replacementsArray[$key], $value);
+            }
+        });
+        return $mainArray;
     }
 }
 

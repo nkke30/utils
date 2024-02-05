@@ -69,7 +69,7 @@ class Response {
 
 
         if(gettype($Message) === 'string') {
-            $Format = Basic::Lize($this->format, ['{{status}}', '{{message}}'], [
+            $Format = Basic::ReWalk($this->format, ['{{status}}', '{{message}}'], [
                 $Status ? $Status : ($this->status ? $this->status : 402),
                 $Message
             ]);
