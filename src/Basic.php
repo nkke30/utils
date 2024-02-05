@@ -247,7 +247,7 @@ class Basic {
 
         return $Unserialized;
     }
-    static public function ReWalk(array $mainArray, array $Replacements) {
+    static public function ReWalk(array $mainArray, array $Replacements): array {
         array_walk_recursive($mainArray, function (&$value) use ($Replacements) {
             foreach ($Replacements as $needle => $replacement) {
                 $value = str_replace($needle, $replacement, $value);
@@ -255,20 +255,30 @@ class Basic {
         });
         return $mainArray;
     }
-    static public function Path($name, $baseDir = __DIR__) {
+    static public function Path(string $name, string $baseDir = __DIR__): array|string|null {
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
         );
-
+    
+        $matches = [];
+    
         foreach ($iterator as $item) {
             $basename = $item->getBasename();
-            if ($basename === $name || $basename === '.' . $name) {
-                return $item->getPathname();
+            $relativePath = ltrim($item->getPathname(), $baseDir . DIRECTORY_SEPARATOR);
+    
+            if ($basename === $name || $relativePath === $name || $relativePath === '.' . $name) {
+                $matches[] = $item->getPathname();
             }
         }
     
-        return null;
+        if (count($matches) === 1) {
+            return $matches[0]; // Return a string if a single match is found
+        } elseif (count($matches) > 1) {
+            return $matches; // Return an array if multiple matches are found
+        } else {
+            return null; // Return null if no matches are found
+        }
     }
 }
 
