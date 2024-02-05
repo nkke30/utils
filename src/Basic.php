@@ -256,6 +256,9 @@ class Basic {
         return $mainArray;
     }
     static public function Path(string $name, string $baseDir = __DIR__): null|array|string {
+
+        echo $baseDir;
+
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
@@ -265,13 +268,19 @@ class Basic {
     
         foreach ($iterator as $item) {
             $relativePath = ltrim($item->getPathname(), $baseDir . DIRECTORY_SEPARATOR);
+            print_r($relativePath.PHP_EOL);
             if (strpos($relativePath, $name) !== false) {
                 $path = $item->getPathname();
                 $matches[] = $path;
             }
         }
-
-        return count($matches) === 1 ? $matches[0] : (count($matches) > 1 ? $matches : null);
+        if (count($matches) === 1) {
+            return $matches[0];
+        } elseif (count($matches) > 1) {
+            return $matches;
+        } else {
+            return null;
+        }
     }
 }
 
@@ -293,7 +302,4 @@ class Headers {
         return $this;
     }
 }
-
-
-echo Basic::Path('src/Baser/Database.php');
 ?>
