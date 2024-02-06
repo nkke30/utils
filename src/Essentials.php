@@ -102,4 +102,23 @@ class Response {
         $this->_Dash($Response, $Status, $Headers);
     }
 }
+
+
+class Headers {
+    private array $Headers;
+    function __construct() {
+        $this->Headers = array_change_key_case(getallheaders());
+    }
+    public function get(): array {
+        return (array) $this->Headers;
+    }
+    public function filter(array $Filter): self {
+        $this->Headers = array_diff_key($this->Headers, array_change_key_case(array_fill_keys($Filter, null)));
+        return $this;
+    }
+    public function replace(array $Replace): self {
+        $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
+        return $this;
+    }
+}
 ?>

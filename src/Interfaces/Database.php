@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Nickimbo\Utils\Baser;
+namespace Nickimbo\Utils\Interfaces;
 
 interface IDatabase
 {

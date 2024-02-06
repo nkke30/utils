@@ -9,7 +9,7 @@ use PDOException;
 use PDOStatement;
 use InvalidArgumentException;
 
-class Database implements IDatabase
+class Database implements \Nickimbo\Utils\Interfaces\IDatabase
 {
     /**
      * The PDO object.

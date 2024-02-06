@@ -249,54 +249,9 @@ class Basic {
     }
     static public function ReWalk(array $mainArray, array $Replacements): array {
         array_walk_recursive($mainArray, function (&$value) use ($Replacements) {
-            foreach ($Replacements as $needle => $replacement) {
-                $value = str_replace($needle, $replacement, $value);
-            }
+            $value = strtr($value, $Replacements);
         });
         return $mainArray;
-    }
-    static public function Path(string $name, string $path = '.'): array {
-        $foundPaths = [];
-    
-        $path = realpath($path);
-    
-        if (is_file($path) && $name === basename($path)) {
-            $foundPaths[] = $path;
-        } elseif (is_dir($path)) {
-
-            $dir = opendir($path);
-    
-            while (($entry = readdir($dir)) !== false) {
-                if ($entry != '.' && $entry != '..') {
-                    $entryPath = $path. '/' . $entry;
-                    $foundPaths = array_merge($foundPaths, self::Path($name, $entryPath));
-                }
-            }
-    
-            closedir($dir);
-        }
-    
-        return $foundPaths;
-    }
-    
-}
-
-
-class Headers {
-    private array $Headers;
-    function __construct() {
-        $this->Headers = array_change_key_case(getallheaders());
-    }
-    public function get(): array {
-        return (array) $this->Headers;
-    }
-    public function filter(array $Filter): self {
-        $this->Headers = array_diff_key($this->Headers, array_change_key_case(array_fill_keys($Filter, null)));
-        return $this;
-    }
-    public function replace(array $Replace): self {
-        $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
-        return $this;
-    }
+    }    
 }
 ?>
