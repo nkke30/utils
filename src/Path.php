@@ -58,7 +58,7 @@ class Path implements IPath {
                 break;
             }
             else {
-                $DirIt = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS|RecursiveIteratorIterator::SELF_FIRST);
+                $DirIt = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS|RecursiveIteratorIterator::SELF_FIRST|RecursiveIteratorIterator::CATCH_GET_CHILD);
 
 
                 $Iterator = new RecursiveIteratorIterator($DirIt);
@@ -110,7 +110,7 @@ class Path implements IPath {
                 $foundDir = $currentDir;
                 break;
             } else {
-                $Dirs = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS);
+                $Dirs = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS|RecursiveIteratorIterator::CATCH_GET_CHILD);
                 $Iterator = new RecursiveIteratorIterator($Dirs);
                 foreach($Iterator as $Entry) {
                     if($Entry->isDir() && $this->contains($Entry->getPath(), $dirContains) && str_ends_with($Entry->getPath(), rtrim($formattedDir, '/'))) {
