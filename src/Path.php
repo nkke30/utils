@@ -52,7 +52,11 @@ class Path implements IPath {
             $currentDir = $localDir . $dir . DIRECTORY_SEPARATOR;
 
             $scanDir = glob($currentDir . '*');
+            print_r($scanDir);
 
+            echo PHP_EOL;
+
+            
             if(in_array($currentDir . $name, $scanDir) && $this->contains($currentDir.$name, $dirIncludes)) {
                 $foundFile = $currentDir.$name;
                 break;
