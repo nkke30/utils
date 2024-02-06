@@ -52,9 +52,6 @@ class Path implements IPath {
             $currentDir = $localDir . $dir . DIRECTORY_SEPARATOR;
 
             $scanDir = glob($currentDir . '*');
-            print_r($scanDir);
-
-            echo PHP_EOL;
 
             
             if(in_array($currentDir . $name, $scanDir) && $this->contains($currentDir.$name, $dirIncludes)) {
@@ -105,8 +102,6 @@ class Path implements IPath {
 
             $scanDir = glob($currentDir . '*', GLOB_ONLYDIR);
 
-            //echo $currentDir.$formattedDir.PHP_EOL;
-
             if((is_dir($currentDir.$formattedDir) || in_array($currentDir.$formattedDir, $scanDir)) && $this->contains($currentDir.$formattedDir, $dirContains)) {
                 $foundDir = $currentDir.$dirName;
                 break;
@@ -150,4 +145,6 @@ class Path implements IPath {
     }
 
 }
+
+echo (new Path())->file('test.json', 'test/match')->collect();
 ?>
