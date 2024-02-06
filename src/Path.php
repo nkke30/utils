@@ -58,10 +58,10 @@ class Path implements IPath {
                 break;
             }
             else {
-                $DirIt = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS|RecursiveIteratorIterator::SELF_FIRST|RecursiveIteratorIterator::CATCH_GET_CHILD);
+                $DirIt = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS);
 
 
-                $Iterator = new RecursiveIteratorIterator($DirIt);
+                $Iterator = new RecursiveIteratorIterator($DirIt, RecursiveIteratorIterator::SELF_FIRST|RecursiveIteratorIterator::CATCH_GET_CHILD);
 
                 foreach($Iterator as $currentFile) {
                     if($currentFile->isFile() && $name == $currentFile->getFilename() && $this->contains($currentFile->getPathname(), $dirIncludes)) {
@@ -110,8 +110,8 @@ class Path implements IPath {
                 $foundDir = $currentDir;
                 break;
             } else {
-                $Dirs = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS|RecursiveIteratorIterator::CATCH_GET_CHILD);
-                $Iterator = new RecursiveIteratorIterator($Dirs);
+                $Dirs = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS);
+                $Iterator = new RecursiveIteratorIterator($Dirs, RecursiveIteratorIterator::CATCH_GET_CHILD);
                 foreach($Iterator as $Entry) {
                     if($Entry->isDir() && $this->contains($Entry->getPath(), $dirContains) && str_ends_with($Entry->getPath(), rtrim($formattedDir, '/'))) {
                         $foundDir = $Entry->getPath();
