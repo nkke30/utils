@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 namespace Nickimbo\Utils;
 
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+
 
 interface IPath {
 
@@ -21,9 +24,9 @@ class Path implements IPath {
 
     private string $rootDir = __DIR__;
 
-    private string $resultDir;
+    private ?string $resultDir;
 
-    private string $resultFile;
+    private ?string $resultFile;
 
     public function construct(?string $rootDir = null): void {
         if ($rootDir !== null) $this->rootDir = $rootDir;
@@ -62,6 +65,9 @@ class Path implements IPath {
         $dirs = array_values(array_filter(explode(DIRECTORY_SEPARATOR, $this->match($this->rootDir, $targetDirName))));
 
 
+        $iteratorDirs = [];
+
+
         if($dirName[-1] !== '/') $dirName .= '/';
         if($dirName[0] !== '/') $dirName = '/' . $dirName;
 
@@ -75,13 +81,27 @@ class Path implements IPath {
             } elseif($currentDir == $dirName) {
                 $foundDir = $currentDir;
                 break;
+            } else {
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($currentDir), 
+                RecursiveIteratorIterator::SELF_FIRST|\FilesystemIterator::SKIP_DOTS);
+
+
+
+                foreach ($iterator as $cIt) {
+                    if($cIt->isDir()) { 
+                        $iteratorDirs[] = $cIt->getBasename().PHP_EOL;
+                    }
+                }
             }
     
             $rootDir = $currentDir;
         }
 
         $this->resultDir = $foundDir;
-    
+
+        print_r($iteratorDirs);
+
         return $this;
     }
 
