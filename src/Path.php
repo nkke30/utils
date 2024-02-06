@@ -1,20 +1,32 @@
 <?php
+declare(strict_types=1);
 
 
 
 namespace Nickimbo\Utils;
 
 
-class Path implements Interfaces\IPath {
+interface IPath {
 
-    private string $rootDir;
+    public function file(string $fileName, string $targetDir): self;
+
+    public function dir(string $dirName, string $targetDir): self;
+
+    public function collect(?string $type): ?string;
+
+}
+
+
+class Path implements IPath {
+
+    private string $rootDir = __DIR__;
 
     private string $resultDir;
 
     private string $resultFile;
 
-    public function construct(?string $rootDir): void {
-        $this->rootDir = $rootDir !== null ? $rootDir : __DIR__;
+    public function construct(?string $rootDir = null): void {
+        if ($rootDir !== null) $this->rootDir = $rootDir;
     }
 
     public function file(string $name, string $dirName = ''): self {
@@ -73,7 +85,7 @@ class Path implements Interfaces\IPath {
         return $this;
     }
 
-    public function collect(?string $type): ?string {
+    public function collect(?string $type = null): ?string {
         switch($type) {
             case 'dir':
                 return $this->resultDir;
@@ -92,6 +104,12 @@ class Path implements Interfaces\IPath {
     }
 
 }
+
+
+
+$Path = new Path();
+
+echo $Path->file('composer.json')->collect();
 
 
 ?>
