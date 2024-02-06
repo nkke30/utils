@@ -13,11 +13,15 @@ class Path implements Interfaces\IPath {
 
     private string $resultFile;
 
+    public function construct(?string $rootDir): void {
+        $this->rootDir = $rootDir !== null ? $rootDir : __DIR__;
+    }
+
     public function file(string $name, string $dirName = ''): self {
         $rootDir = '/';
         $foundFile = null;
 
-        $dirs = array_values(array_filter(explode(DIRECTORY_SEPARATOR, $this->match(__DIR__, $dirName))));
+        $dirs = array_values(array_filter(explode(DIRECTORY_SEPARATOR, $this->match($this->rootDir, $dirName))));
     
         foreach ($dirs as $dir) {
 
@@ -43,7 +47,7 @@ class Path implements Interfaces\IPath {
         $rootDir = '/';
         $foundDir = null;
 
-        $dirs = array_values(array_filter(explode(DIRECTORY_SEPARATOR, $this->match(__DIR__, $targetDirName))));
+        $dirs = array_values(array_filter(explode(DIRECTORY_SEPARATOR, $this->match($this->rootDir, $targetDirName))));
 
 
         if($dirName[-1] !== '/') $dirName .= '/';
@@ -70,8 +74,6 @@ class Path implements Interfaces\IPath {
     }
 
     public function collect(?string $type): ?string {
-
-
         switch($type) {
             case 'dir':
                 return $this->resultDir;
