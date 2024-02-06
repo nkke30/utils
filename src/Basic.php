@@ -252,6 +252,6 @@ class Basic {
             $value = strtr($value, $Replacements);
         });
         return $mainArray;
-    }    
+    }
 }
 ?>
