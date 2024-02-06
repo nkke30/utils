@@ -96,7 +96,7 @@ class Path implements IPath {
         }
     }
 
-    private function match(string $haystack, string $needle): string {
+    public function match(string $haystack, string $needle): string {
         $Pos = strrpos($haystack, $needle);
 
         if ($Pos !== false) return substr($haystack, 0, $Pos + strlen($needle));
@@ -104,6 +104,4 @@ class Path implements IPath {
     }
 
 }
-
-
 ?>
