@@ -106,10 +106,4 @@ class Path implements IPath {
 }
 
 
-
-$Path = new Path();
-
-echo $Path->file('composer.json')->collect();
-
-
 ?>
