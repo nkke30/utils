@@ -72,7 +72,7 @@ class Response {
         
         http_response_code($Status ?? $this->status);
 
-        header(Basic::String('content-type: {}'), $this->contentType);
+        header(Basic::String('content-type: {}', $this->contentType));
 
         if ($this->headers) {
             if ($Headers !== null) {
