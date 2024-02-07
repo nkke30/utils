@@ -59,7 +59,8 @@ class Path implements IPath {
                 break;
             }
             else {
-                $DirIt = new RecursiveDirectoryIterator($currentDir, FilesystemIterator::SKIP_DOTS);
+                foreach(array_filter($scanDir, 'is_dir') as $xdDir) {
+                $DirIt = new RecursiveDirectoryIterator($xdDir, FilesystemIterator::SKIP_DOTS);
 
 
                 $Iterator = new RecursiveIteratorIterator($DirIt, RecursiveIteratorIterator::SELF_FIRST|RecursiveIteratorIterator::CATCH_GET_CHILD);
@@ -70,7 +71,7 @@ class Path implements IPath {
                         break 2;
                     } 
                 }
-
+            }
             } 
 
             
@@ -145,6 +146,4 @@ class Path implements IPath {
     }
 
 }
-
-echo (new Path())->file('test.json', 'test/match')->collect();
 ?>

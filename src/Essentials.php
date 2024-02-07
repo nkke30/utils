@@ -51,10 +51,12 @@ class Response {
 
 
 
-    public function __construct(array | stdClass $Format, ?array $Options = null) {
-
-        //if(array_search('{{message}}', $Format) === false) throw new \Error("{{message}} value not found when constructing Errors object");
-
+    public function __construct(array | stdClass $Format = [
+        'response' => [
+            'message' => '{{message}}',
+            'status' => '{{status}}'
+        ]
+    ], ?array $Options = null) {
         $this->format = (array) $Format;
 
         if($Options !== null) {
@@ -63,12 +65,8 @@ class Response {
         }
     }
 
-    private function _Dash(string | array $Message, ?int $Status = null, ?array $Headers = null): void {
-
-
-
-
-        if(gettype($Message) === 'string') $Format = Basic::ReWalk($this->format, ['{{status}}' => $Status ? $Status : ($this->status ? $this->status : 402), '{{message}}' => $Message]);
+    private function _Dash(string | array $Message, ?int $Status = null, ?array $Headers = null, bool $useFormat = true): void {
+        if(gettype($Message) === 'string' && $useFormat) $Format = Basic::ReWalk($this->format, ['{{status}}' => $Status ? $Status : ($this->status ? $this->status : 402), '{{message}}' => $Message]);
         
         http_response_code($Status ?? $this->status);
 
@@ -98,8 +96,15 @@ class Response {
         $this->_Dash($Message, $Status, $Headers);
     }
 
-    public function Response(array $Response, ?int $Status = null, ?array $Headers = null): void {
+    public function Response(array | string $Response, ?int $Status = null, ?array $Headers = null): void {
         $this->_Dash($Response, $Status, $Headers);
+    }
+
+    public function Redirect(string $Url, ?array $Headers = null): void {
+        $this->_Dash('', 302, $Headers ? array_merge($Headers, ['location' => $Url]) : ['location' => $Url], false);
+    }
+    public function Format(array | stdClass $Format): array {
+        return $this->format = (array) $Format;
     }
 }
 
