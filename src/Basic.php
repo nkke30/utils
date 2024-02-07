@@ -18,6 +18,15 @@ define('UTILS_CURRENT_HOST', (
     ($_SERVER['HTTP_HOST'] ?? 'localhost') 
 ));
 
+
+define('UTILS_CURRENT_HTTPS_HOST', ('https://' . $_SERVER['HTTP_HOST'] ?? 'localhost'));
+
+define('UTILS_CURRENT_HTTPS_URL', (
+    ('https://').
+    ($_SERVER['HTTP_HOST'] ?? 'localhost') . 
+    ($_SERVER['REQUEST_URI'] ?? '/')
+));
+
 define('FALSE_PARSE', 0x4227);  
 class Basic {
     public static function toSprintf(string $inputString, string $delimiter = '{}', string $escaper = '\\'): string {
