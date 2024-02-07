@@ -18,7 +18,6 @@ interface IPath {
     public function dir(string $dirName, string $dirIncludes): self;
 
     public function collect(?string $type): ?string;
-
 }
 
 
