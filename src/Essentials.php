@@ -48,6 +48,7 @@ class Response {
 
     private array $headers;
 
+    public string $contentType;
 
 
 
@@ -58,6 +59,7 @@ class Response {
         ]
     ], ?array $Options = null) {
         $this->format = (array) $Format;
+        $this->contentType = 'application/json';
 
         if($Options !== null) {
             if(isset($Options['headers']) && gettype($Options['headers']) === 'array') $this->headers = $Options['headers'];
@@ -70,6 +72,8 @@ class Response {
         
         http_response_code($Status ?? $this->status);
 
+        header(Basic::String('content-type: {}'), $this->contentType);
+
         if ($this->headers) {
             if ($Headers !== null) {
                 foreach(array_merge($this->headers, $Headers) as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
@@ -80,7 +84,10 @@ class Response {
             foreach($Headers as $Key => $Value) header(Basic::String('{}: {}', $Key, $Value));
         }
 
-        die(json_encode(isset($Format) ? $Format : $Message, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
+
+        die(
+            isset($Format) ? json_encode($Format, 128|32|256) : (is_array($Message) ? json_encode($Message, 128|32|256) : $Message)
+        );
     }
 
     public function Error(string $Message, ?int $Status = null, ?array $Headers = null): void {
@@ -103,8 +110,9 @@ class Response {
     public function Redirect(string $Url, ?array $Headers = null): void {
         $this->_Dash('', 302, $Headers ? array_merge($Headers, ['location' => $Url]) : ['location' => $Url], false);
     }
-    public function Format(array | stdClass $Format): array {
-        return $this->format = (array) $Format;
+    public function Format(array | stdClass $Format): self {
+        $this->format = (array) $Format;
+        return $this;
     }
 }
 
