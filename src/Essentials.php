@@ -33,10 +33,13 @@ class Stringer {
         return substr(hash('sha256', $haystack), 0, $Type == 'key' ? 32 : 16);
     }
     public function Encrypt(string $needle): string {
-        return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV));
+        return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV, base64_encode($this->Method)));
     }
     public function Decrypt(string $needle): ?string {
-        return openssl_decrypt(base64_decode($needle), $this->Method, $this->Key, 0, $this->IV);
+        return openssl_decrypt(base64_decode($needle), $this->Method, $this->Key, 0, $this->IV, base64_encode($this->Method));
+    }
+    public function Tag(): string {
+        return base64_encode($this->Method);
     }
 }
 
