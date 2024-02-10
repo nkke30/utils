@@ -154,7 +154,7 @@ class Path implements IPath {
 
         $Files = [];
 
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS));
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS), RecursiveIteratorIterator::CATCH_GET_CHILD);
 
         foreach ($it as $File) {
             if ($File->isDir()) continue;
@@ -181,7 +181,7 @@ class Path implements IPath {
 
         $Dirs = [];
 
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS));
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS), RecursiveIteratorIterator::CATCH_GET_CHILD);
     
         foreach ($it as $File) {
             if ($File->isDir()) {
