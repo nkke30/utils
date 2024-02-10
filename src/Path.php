@@ -149,16 +149,17 @@ class Path implements IPath {
         }
     }
 
-    public function listFiles(string $dirName, callable|Closure|null|array $Filter): Path {
+    public function listFiles(string $dirName, callable|Closure|null|array $Filter = null): Path {
         if (!is_dir($dirName)) return $this;
 
         $Files = [];
 
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS), RecursiveIteratorIterator::CATCH_GET_CHILD);
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
 
         foreach ($it as $File) {
             if ($File->isDir()) continue;
             if ($Filter !== null) {
+
                 if(is_array($Filter)) foreach ($Filter as $Ext): if(str_ends_with($File->getFilename(), $Ext)) $Files[] = $File->getPathname(); endforeach;
                 else {
                     if ($Filter($File)) $Files[] = $File->getPathname();
@@ -176,12 +177,12 @@ class Path implements IPath {
 
     }
 
-    public function listDirs(string $dirName, callable|Closure|null $Filter): Path {
+    public function listDirs(string $dirName, callable|Closure|null $Filter = null): Path {
         if (!is_dir($dirName)) return $this;
 
         $Dirs = [];
 
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS), RecursiveIteratorIterator::CATCH_GET_CHILD);
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
     
         foreach ($it as $File) {
             if ($File->isDir()) {
