@@ -32,11 +32,16 @@ class Stringer {
     private function Transform(string $haystack, $Type = 'key'): string {
         return substr(hash('sha256', $haystack), 0, $Type == 'key' ? 32 : 16);
     }
-    public function Encrypt(string $needle): string {
-        return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV, base64_encode($this->Method)));
+    public function Encrypt(string $needle, ?bool $useTag = null): string {
+        if ($useTag) {
+            $Tag = self::Tag();
+            return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV, $Tag));
+        } else {
+            return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV));
+        }
     }
-    public function Decrypt(string $needle): ?string {
-        return openssl_decrypt(base64_decode($needle), $this->Method, $this->Key, 0, $this->IV, base64_encode($this->Method));
+    public function Decrypt(string $needle, ?string $Tag = null): ?string {
+        return $Tag ? openssl_decrypt(base64_decode($needle), $this->Method, $this->Key, 0, $this->IV, $Tag) : openssl_decrypt(base64_decode($needle), $this->Method, $this->Key, 0, $this->IV);
     }
     public function Tag(): string {
         return base64_encode($this->Method);
