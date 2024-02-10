@@ -19,7 +19,7 @@ define('UTILS_CURRENT_HOST', (
 ));
 
 
-define('UTILS_CURRENT_HTTPS_HOST', ('https://' . $_SERVER['HTTP_HOST'] ?? 'localhost'));
+define('UTILS_CURRENT_HTTPS_HOST', ('https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')));
 
 define('UTILS_CURRENT_HTTPS_URL', (
     ('https://').
@@ -129,7 +129,7 @@ class Basic {
         return $Args[0];
     }
     static public function Parse(mixed $haystack, ?string $forceType = 'json', ?int $Type = 1): mixed {
-        $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
+        $T = in_array($forceType, ['json', 'object', 'boolean', 'integer', 'double', 'string', 'array', 'null', 'unknown', 'domain']) ? ($forceType === 'json' ? 'object' : ($forceType === 'unknown' ? 'unknown type' : $forceType)) : 'object';
         $O = strtolower(strval(gettype($haystack)));
         if($T === $O) return $haystack;
 
@@ -149,6 +149,16 @@ class Basic {
                 return (array)$haystack;
             case 'null':
                 return is_null($haystack) ? $haystack : FALSE_PARSE;
+            case 'domain':
+                $Host = parse_url($haystack, PHP_URL_HOST);
+                switch (true) {
+                    case substr_count($Host, '.') === 2:
+                        return explode('.', $Host, 2)[1];
+                    case substr_count($Host, '.') > 2:
+                        return self::Parse('https://' . explode('.', $Host, 2)[1], 'domain');
+                    case substr_count($Host, '.') < 2:
+                        return $Host;
+                }
             case 'unknown type':
                 return 'unknown';
         endswitch;
