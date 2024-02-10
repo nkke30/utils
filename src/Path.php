@@ -183,7 +183,6 @@ class Path implements IPath {
         $Dirs = [];
 
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
-    
         foreach ($it as $File) {
             if ($File->isDir()) {
                 if ($Filter !== null) {
