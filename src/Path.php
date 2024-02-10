@@ -21,6 +21,8 @@ interface IPath {
     public function listFiles(string $dirName, array|callable|closure|null $Extensions): Path;
 
     public function listDirs(string $dirName, callable|Closure|null $Filter): Path;
+
+    public function Root(): string;
 }
 
 
@@ -197,11 +199,8 @@ class Path implements IPath {
 
     }
 
-    public function match(string $haystack, string $needle): string {
-        $Pos = strpos($haystack, $needle);
-
-        if ($Pos !== false) return substr($haystack, 0, $Pos + strlen($needle));
-        else return $haystack;
+    public function Root(): string {
+       return '/' . array_values(array_filter(explode('/', $this->rootDir)))[0]; 
     }
 }
 ?>
