@@ -5,19 +5,22 @@ declare(strict_types=1);
 
 namespace Nickimbo\Utils;
 
+use Closure;
 use FilesystemIterator;
-use RecursiveCallbackFilterIterator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use RecursiveFilterIterator;
 
 interface IPath {
 
-    public function file(string $fileName, string $dirIncludes): self;
+    public function findFile(string $fileName, string $dirIncludes): Path;
 
-    public function dir(string $dirName, string $dirIncludes): self;
+    public function findDir(string $dirName, string $dirIncludes): Path;
 
-    public function collect(?string $type): ?string;
+    public function collect(?string $type): array|string|null;
+
+    public function listFiles(string $dirName, array|callable|closure|null $Extensions): Path;
+
+    public function listDirs(string $dirName, callable|Closure|null $Filter): Path;
 }
 
 
@@ -25,9 +28,13 @@ class Path implements IPath {
 
     private string $rootDir = __DIR__;
 
-    private ?string $resultDir;
+    private ?string $Dir;
 
-    private ?string $resultFile;
+    private ?string $File;
+    
+    private ?array $Files;
+
+    private ?array $Dirs;
 
 
     private function contains(string $haystack, string $needle): bool {
@@ -39,7 +46,7 @@ class Path implements IPath {
         if ($rootDir !== null) $this->rootDir = $rootDir;
     }
 
-    public function file(string $name, string $dirIncludes = ''): self {
+    public function findFile(string $name, string $dirIncludes = ''): Path {
         $foundFile = null;
 
         $localDir = '/';
@@ -76,14 +83,13 @@ class Path implements IPath {
             
             $localDir .= ($dir . DIRECTORY_SEPARATOR);
         }
-    
 
-        $this->resultFile = $foundFile;
+        $this->File = $foundFile;
 
         return $this;
     }
 
-    public function dir(string $dirName, string $dirContains = ''): self {
+    public function findDir(string $dirName, string $dirContains = ''): Path {
 
         $localDir = '/';
         $foundDir = null;
@@ -121,20 +127,74 @@ class Path implements IPath {
             $localDir .= ($dir . DIRECTORY_SEPARATOR);
         }
 
-        $this->resultDir = $foundDir;
+        $this->Dir = $foundDir;
 
         return $this;
     }
 
-    public function collect(?string $type = null): ?string {
+    public function collect(?string $type = null): array|string|null {
         switch($type) {
             case 'dir':
-                return $this->resultDir;
+                return $this->Dir;
             case 'file':
-                return $this->resultFile;
+                return $this->File;
+            case 'files': 
+                return $this->Files;
+            case 'dirs':
+                return $this->Dirs;
             default:
-                return $this->resultFile;
+                return $this->File;
         }
+    }
+
+    public function listFiles(string $dirName, callable|Closure|null|array $Filter): Path {
+        if (!is_dir($dirName)) return $this;
+
+        $Files = [];
+
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS));
+
+        foreach ($it as $File) {
+            if ($File->isDir()) continue;
+            if ($Filter !== null) {
+                if(is_array($Filter)) foreach ($Filter as $Ext): if(str_ends_with($File->getFilename(), $Ext)) $Files[] = $File->getPathname(); endforeach;
+                else {
+                    if ($Filter($File)) $Files[] = $File->getPathname();
+                }
+            } else {
+                $Files[] = $File->getPathname();
+            }
+        }
+
+        $this->Files = $Files;
+
+
+
+        return $this;
+
+    }
+
+    public function listDirs(string $dirName, callable|Closure|null $Filter): Path {
+        if (!is_dir($dirName)) return $this;
+
+        $Dirs = [];
+
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirName, FilesystemIterator::UNIX_PATHS));
+    
+        foreach ($it as $File) {
+            if ($File->isDir()) {
+                if ($Filter !== null) {
+                    if ($Filter($File)) $Dirs[] = $File->getPath() . DIRECTORY_SEPARATOR;
+                } else {
+                    $Dirs[] = $File->getPath() . DIRECTORY_SEPARATOR;
+                }
+            }
+        }
+
+        $this->Dirs = $Dirs;
+
+        return $this;
+
     }
 
     public function match(string $haystack, string $needle): string {
@@ -143,6 +203,5 @@ class Path implements IPath {
         if ($Pos !== false) return substr($haystack, 0, $Pos + strlen($needle));
         else return $haystack;
     }
-
 }
 ?>
