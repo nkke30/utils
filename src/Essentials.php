@@ -52,11 +52,11 @@ class Stringer {
 class Response {
     private array $format;
 
-    private int $status;
+    private int $status = 200;
 
-    private array $headers;
+    private ?array $headers = null;
 
-    public string $contentType;
+    public string $contentType = 'application/json';
 
 
 
@@ -67,7 +67,6 @@ class Response {
         ]
     ], ?array $Options = null) {
         $this->format = (array) $Format;
-        $this->contentType = 'application/json';
 
         if($Options !== null) {
             if(isset($Options['headers']) && gettype($Options['headers']) === 'array') $this->headers = $Options['headers'];
