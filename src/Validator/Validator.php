@@ -3,8 +3,11 @@
 namespace Nickimbo\Utils\Validator;
 
 
-use Nickimbo\Utils\Validator\Rules;
-class BodyValidator {
+use Nickimbo\Utils\Validator\Interfaces\IRule;
+use Nickimbo\Utils\Validator\Interfaces\IValidator;
+
+
+class Validator implements IValidator {
     private ?array $errors = null;
 
     private array $body;
@@ -26,7 +29,7 @@ class BodyValidator {
         return $this;
     }
 
-    public function setRules(Rules\IRule ...$Rules): self {
+    public function setRules(IRule ...$Rules): self {
         $this->rules = $Rules;
         return $this;
     }
@@ -100,18 +103,18 @@ class BodyValidator {
     }
 }
 
-/*
+
 
 $Validate = [
     'required' => true,
     'notrequired' => 'https://www.roblox.com'
 ];
 
-$X = new BodyValidator($Validate);
+$X = new Validator($Validate);
 
-$X->setFields('required', '?notrequired')->setRules(new \Nickimbo\Utils\Validator\Rules\BooleanType(), new Rules\Url())->run();
+$X->setFields('required', '?notrequired')->setRules(new Rules\Length(5), new Rules\Length(1))->run();
 
-*/
+
 
 
 ?>
