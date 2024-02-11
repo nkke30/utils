@@ -4,7 +4,6 @@ namespace Nickimbo\Utils;
 
 
 class BodyValidator {
-
     private ?array $errors = null;
 
     private array $body;
