@@ -25,7 +25,7 @@ class BodyValidator {
         return $this;
     }
 
-    public function setRules(Rules\Rule ...$Rules): self {
+    public function setRules(Rules\IRule ...$Rules): self {
         $this->rules = $Rules;
         return $this;
     }

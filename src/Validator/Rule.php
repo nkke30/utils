@@ -4,15 +4,15 @@ namespace Nickimbo\Utils\Validator\Rules;
 
 use stdClass;
 
-interface Rule {
+interface IRule {
     
     public function run(stdClass|array|string|int $needle): bool;
 
 }
 
-interface RuleIt {
+interface IRuleIt {
 
-    public function run(Rule $Rule): bool;
+    public function run(IRule $Rule): bool;
 
 }
 

@@ -2,7 +2,7 @@
 
 namespace Nickimbo\Utils\Validator\Rules;
 
-class Url implements Rule {
+class Url implements IRule {
 
     public function run($needle): bool {
 

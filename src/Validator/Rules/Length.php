@@ -5,7 +5,7 @@ namespace Nickimbo\Utils\Validator\Rules;
 
 use stdClass;
 
-class Length implements Rule {
+class Length implements IRule {
 
     private int $length;
 

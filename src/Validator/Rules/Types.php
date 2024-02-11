@@ -3,7 +3,7 @@
 namespace Nickimbo\Utils\Validator\Rules;
 
 
-class ArrayType implements Rule {
+class ArrayType implements IRule {
 
     public function run(mixed $needle): bool {
 
@@ -13,7 +13,7 @@ class ArrayType implements Rule {
 }
 
 
-class StringType implements Rule {
+class StringType implements IRule {
 
     public function run(mixed $needle): bool {
 
@@ -22,7 +22,7 @@ class StringType implements Rule {
     }
 }
 
-class BooleanType implements Rule {
+class BooleanType implements IRule {
     
     public function run(mixed $needle): bool {
         return @is_bool($needle);

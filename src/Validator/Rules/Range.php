@@ -6,7 +6,7 @@ namespace Nickimbo\Utils\Validator\Rules;
 use stdClass;
 use Nickimbo\Utils\Validator\Exceptions;
 
-class Range implements Rule {
+class Range implements IRule {
 
     private array $Range;
 

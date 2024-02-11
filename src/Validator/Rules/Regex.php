@@ -4,7 +4,7 @@ namespace Nickimbo\Utils\Validator\Rules;
 
 use Nickimbo\Utils\Validator\Exceptions;
 
-class Regex implements Rule {
+class Regex implements IRule {
 
     private string $Pattern;
 

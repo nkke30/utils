@@ -22,14 +22,5 @@
   "require": {
     "php": "^8.2"
   },
-  "config": {
-    "bin-dir": "bin",
-    "optimize-autoloader": true,
-    "preferred-install": {
-      "*": "dist"
-    },
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  "minimum-stability": "dev"
 }

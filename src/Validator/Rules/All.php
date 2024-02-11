@@ -3,11 +3,11 @@
 namespace Nickimbo\Utils\Validator\Rules;
 
 
-class All implements Rule {
+class All implements IRule {
 
     private array $rules;
 
-    public function __construct(Rule ...$Rules) {
+    public function __construct(IRule ...$Rules) {
         $this->rules = $Rules;
     }
 
