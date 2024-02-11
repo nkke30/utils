@@ -9,7 +9,9 @@
       },
       "classmap": [
         "src/Essentials.php",
-        "src/Basic.php"
+        "src/Basic.php",
+        "src/Path.php",
+        "src/Validator/BodyValidator.php"
       ]
   },
   "authors": [
