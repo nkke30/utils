@@ -2,7 +2,6 @@
   "name": "nickimbo/utils",
   "description": "nickimbo utils package",
   "type": "project",
-  "license": "MIT",
   "autoload": {
       "psr-4": {
             "Nickimbo\\Utils\\": "src/"
@@ -14,7 +13,7 @@
     }
   ],
   "require": {
-    "php": "^8.2"
+    "php": "^8.3"
   },
   "minimum-stability": "dev"
 }
