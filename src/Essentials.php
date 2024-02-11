@@ -34,7 +34,7 @@ class Stringer {
     }
     public function Encrypt(string $needle, ?bool $useTag = null): string {
         if ($useTag) {
-            $Tag = self::Tag();
+            $Tag = $this->Tag();
             return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV, $Tag));
         } else {
             return base64_encode(openssl_encrypt($needle, $this->Method, $this->Key, 0, $this->IV));
@@ -57,7 +57,6 @@ class Response {
     private ?array $headers = null;
 
     public string $contentType = 'application/json';
-
 
 
     public function __construct(array | stdClass $Format = [
