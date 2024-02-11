@@ -2,17 +2,17 @@
 
 namespace Nickimbo\Utils\Validator\Rules;
 
-use Nickimbo\Utils\Validator\Interfaces\IRule;
+use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
 
-class Any implements IRule {
+class Any implements RuleInterface {
 
     private array $rules;
 
-    public function __construct(IRule ...$Rules) {
+    public function __construct(RuleInterface ...$Rules) {
         $this->rules = $Rules;
     }
 
-    public function run($needle): bool {
+    public function run($needle, string $field): bool {
         
         $validCount = 0;
 

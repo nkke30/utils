@@ -2,13 +2,11 @@
 
 namespace Nickimbo\Utils\Validator\Rules;
 
-use Nickimbo\Utils\Validator\Interfaces\IRule;
+use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
 
+class Url implements RuleInterface {
 
-
-class Url implements IRule {
-
-    public function run($needle): bool {
+    public function run($needle, string $field): bool {
 
         return @filter_var($needle, FILTER_VALIDATE_URL);
 

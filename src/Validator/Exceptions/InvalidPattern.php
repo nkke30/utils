@@ -3,7 +3,7 @@
 namespace Nickimbo\Utils\Validator\Exceptions;
 
 
-final class Pattern extends \Exception {
+final class InvalidPattern extends \Exception {
 
     private const MESSAGE = 'Invalid pattern (`%s`) provided';
 

@@ -2,12 +2,12 @@
 
 namespace Nickimbo\Utils\Validator\Rules;
 
-use Nickimbo\Utils\Validator\Interfaces\IRule;
+use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
 
 use \stdClass;
 
 
-final class Length implements IRule {
+final class Length implements RuleInterface {
 
     private int $length;
 
@@ -15,10 +15,9 @@ final class Length implements IRule {
         $this->length = $length;
     }
 
-    public function run(stdClass|array|string|int $needle): bool {
+    public function run(stdClass|array|string|int $needle, string $field): bool {
 
-
-        if(@in_array(@gettype($needle), ['string', 'int'])) return @strlen((string)$needle) === $this->length;
+        if(@in_array(@gettype($needle), ['string', 'integer', 'double'])) return @strlen((string)$needle) === $this->length;
 
         return @sizeof((array)$needle) === $this->length;
     }

@@ -3,7 +3,7 @@
 namespace Nickimbo\Utils\Validator\Exceptions;
 
 
-final class Range extends \Exception {
+final class InvalidRange extends \Exception {
 
     private const MESSAGE = 'Invalid range array provided. Requires [int, int] got: %s';
 

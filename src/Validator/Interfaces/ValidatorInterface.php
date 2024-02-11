@@ -2,12 +2,13 @@
 
 namespace Nickimbo\Utils\Validator\Interfaces;
 
-interface IValidator {
+
+interface ValidatorInterface {
 
 
     public function setFields(string ...$Fields): self;
 
-    public function setRules(\Nickimbo\Utils\Validator\Interfaces\IRule ...$Rules): self;
+    public function setRules(RuleInterface ...$Rules): self;
 
     public function run(): void;
 
@@ -15,7 +16,5 @@ interface IValidator {
 
     public function isValid(): bool;
 }
-
-
 
 ?>

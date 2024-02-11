@@ -2,12 +2,10 @@
 
 namespace Nickimbo\Utils\Validator;
 
+use Nickimbo\Utils\Validator\Interfaces\ValidatorInterface;
+use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
 
-use Nickimbo\Utils\Validator\Interfaces\IRule;
-use Nickimbo\Utils\Validator\Interfaces\IValidator;
-
-
-class Validator implements IValidator {
+class Validator implements ValidatorInterface {
     private ?array $errors = null;
 
     private array $body;
@@ -29,7 +27,7 @@ class Validator implements IValidator {
         return $this;
     }
 
-    public function setRules(IRule ...$Rules): self {
+    public function setRules(RuleInterface ...$Rules): self {
         $this->rules = $Rules;
         return $this;
     }
@@ -45,7 +43,7 @@ class Validator implements IValidator {
         foreach ($this->fields as $Key => $Field):
 
             $optionalField = str_starts_with($Field, '?');
-            $inBody = in_array($Field, $this->body);
+            $inBody = array_key_exists($Field, $this->body);
 
             if($optionalField === false) $needCount++;
 
@@ -74,13 +72,14 @@ class Validator implements IValidator {
 
             if($inBody === true) {
 
-                if($this->rules[$Key]->run($this->body[$Field]) === false) {
+                if($this->rules[$Key]->run($this->body[$Field], $Field) === false) {
                     $this->errors[] = [
                         'field' => $Field,
                         'required' => !$optionalField,
                         'reason' => 'Field failed passing check.',
                         'value' => $this->body[$Field],
-                        'rule' => $this->rules[$Key]
+                        'rule' => $this->rules[$Key],
+                        'type' => gettype($this->body[$Field])
                     ];
                     continue;
                 }
@@ -105,14 +104,7 @@ class Validator implements IValidator {
 
 
 
-$Validate = [
-    'required' => true,
-    'notrequired' => 'https://www.roblox.com'
-];
 
-$X = new Validator($Validate);
-
-$X->setFields('required', '?notrequired')->setRules(new Rules\Length(5), new Rules\Length(1))->run();
 
 
 
