@@ -1,9 +1,9 @@
 <?php
 
-namespace Nickimbo\Utils\Validator;
+namespace Nickimbo\Utils;
 
 
-class Validator {
+class BodyValidator {
 
     private ?array $errors = null;
 
@@ -26,7 +26,7 @@ class Validator {
         return $this;
     }
 
-    public function setRules(Rules\Rule ...$Rules): self {
+    public function setRules(Validator\Rules\Rule ...$Rules): self {
         $this->rules = $Rules;
         return $this;
     }
