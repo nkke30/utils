@@ -3,6 +3,7 @@
 namespace Nickimbo\Utils\Validator;
 
 
+use Nickimbo\Utils\Validator\Rules;
 class BodyValidator {
     private ?array $errors = null;
 
@@ -99,6 +100,18 @@ class BodyValidator {
     }
 }
 
+/*
+
+$Validate = [
+    'required' => true,
+    'notrequired' => 'https://www.roblox.com'
+];
+
+$X = new BodyValidator($Validate);
+
+$X->setFields('required', '?notrequired')->setRules(new \Nickimbo\Utils\Validator\Rules\BooleanType(), new Rules\Url())->run();
+
+*/
 
 
 ?>
