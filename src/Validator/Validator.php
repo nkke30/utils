@@ -2,8 +2,8 @@
 
 namespace Nickimbo\Utils\Validator;
 
-use Nickimbo\Utils\Validator\Interfaces\ValidatorInterface;
-use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
+use Nickimbo\Utils\Interfaces\ValidatorInterface;
+use Nickimbo\Utils\Interfaces\RuleInterface;
 
 class Validator implements ValidatorInterface {
     private ?array $errors = null;

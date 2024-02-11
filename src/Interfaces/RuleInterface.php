@@ -1,6 +1,6 @@
 <?php
 
-namespace Nickimbo\Utils\Validator\Interfaces;
+namespace Nickimbo\Utils\Interfaces;
 
 use stdClass;
 

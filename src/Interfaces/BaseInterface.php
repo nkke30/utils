@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Nickimbo\Utils\Base;
+namespace Nickimbo\Utils\Interfaces;
 
-interface IBase
+interface BaseInterface
 {
      /**
      * Create a table.

@@ -3,7 +3,7 @@
 namespace Nickimbo\Utils\Validator\Rules\Types;
 
 
-use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
+use Nickimbo\Utils\Interfaces\RuleInterface;
 
 class ArrayType implements RuleInterface {
 

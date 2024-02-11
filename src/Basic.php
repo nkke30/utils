@@ -28,6 +28,7 @@ define('UTILS_CURRENT_HTTPS_URL', (
 ));
 
 define('FALSE_PARSE', 0x4227);  
+
 class Basic {
     public static function toSprintf(string $inputString, string $delimiter = '{}', string $escaper = '\\'): string {
         return strtr($inputString, [
@@ -105,7 +106,6 @@ class Basic {
     }
     static public function deepSearch(array $Array, mixed $Needle): array {
         $Arr = [];
-
         array_walk($Array, function($Value, $Key) use(&$Arr, $Needle) {
             if ($Value == $Needle) $Arr[] = $Key;
         });
@@ -271,6 +271,14 @@ class Basic {
             $value = strtr($value, $Replacements);
         });
         return $mainArray;
+    }
+    static public function LoadHTML(string $Path, ?array $Replacements = null): string {
+
+        $renderHTML = file_get_contents($Path);
+
+        if ($Replacements !== null) return \preg_replace_callback('/(?<!\\\\)\{\{(\d+)\}\}/', fn ($Match) => $Replacements[$Match[1]], $renderHTML);
+
+        return $renderHTML;
     }
 }
 ?>

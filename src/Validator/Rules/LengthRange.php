@@ -2,7 +2,7 @@
 
 namespace Nickimbo\Utils\Validator\Rules;
 
-use Nickimbo\Utils\Validator\Interfaces\RuleInterface;
+use Nickimbo\Utils\Interfaces\RuleInterface;
 use Nickimbo\Utils\Validator\Exceptions;
 
 

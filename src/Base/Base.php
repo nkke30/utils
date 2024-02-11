@@ -10,7 +10,7 @@ use PDOStatement;
 use InvalidArgumentException;
 
 
-class Base implements IBase
+class Base implements \Nickimbo\Utils\Interfaces\BaseInterface
 {
     /**
      * The PDO object.

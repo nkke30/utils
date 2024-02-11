@@ -10,23 +10,8 @@ use FilesystemIterator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
-interface IPath {
 
-    public function findFile(string $fileName, string $dirIncludes): Path;
-
-    public function findDir(string $dirName, string $dirIncludes): Path;
-
-    public function collect(?string $type): array|string|null;
-
-    public function listFiles(string $dirName, array|callable|closure|null $Extensions): Path;
-
-    public function listDirs(string $dirName, callable|Closure|null $Filter): Path;
-
-    public function Root(): string;
-}
-
-
-class Path implements IPath {
+class Path implements Interfaces\PathInterface {
 
     private string $rootDir = __DIR__;
 
