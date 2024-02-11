@@ -276,7 +276,7 @@ class Basic {
 
         $renderHTML = file_get_contents($Path);
 
-        if ($Replacements !== null) return \preg_replace_callback('/(?<!\\\\)\{\{(\d+)\}\}/', fn ($Match) => $Replacements[$Match[1]], $renderHTML);
+        if ($Replacements !== null) return \preg_replace_callback('/(?<!\\\\)\{\{(\w+)\}\}/', fn ($Match) => $Replacements[$Match[1]], $renderHTML);
         return $renderHTML;
     }
 }
