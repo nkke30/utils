@@ -17,7 +17,7 @@ class Any implements RuleInterface {
         $validCount = 0;
 
         foreach($this->rules as $Rule) {
-            if($Rule->run($needle)) $validCount += 1;
+            if($Rule->run($needle, $field)) $validCount += 1;
         }
 
         return $validCount > 0;

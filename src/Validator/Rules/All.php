@@ -18,9 +18,8 @@ class All implements RuleInterface {
         $validCount = 0;
 
         $needCount = sizeof($this->rules);
-
         foreach($this->rules as $Rule) {
-            if($Rule->run($needle)) $validCount += 1;
+            if($Rule->run($needle, $field)) $validCount += 1;
         }
 
         return $validCount === $needCount;
