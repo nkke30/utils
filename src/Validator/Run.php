@@ -21,12 +21,14 @@ class Validator {
 
     }
 
-    public function setFields(string ...$Fields) {
+    public function setFields(string ...$Fields): self {
         $this->fields = $Fields;
+        return $this;
     }
 
-    public function setRules(Rules\Rule ...$Rules) {
+    public function setRules(Rules\Rule ...$Rules): self {
         $this->rules = $Rules;
+        return $this;
     }
 
     public function run(): void {
