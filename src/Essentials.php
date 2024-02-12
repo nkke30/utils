@@ -125,11 +125,28 @@ class Response {
 
 class Headers {
     private array $Headers;
-    function __construct() {
-        $this->Headers = array_change_key_case(getallheaders());
+    function __construct(?array $Headers = null) {
+        $this->Headers = array_change_key_case($Headers ? $Headers : getallheaders());
     }
-    public function get(): array {
-        return (array) $this->Headers;
+    public function get(array|string|null $Use = null): array | null | string {
+        switch(gettype($Use)) {
+            case 'array':
+                return call_user_func_array('array_merge', array_map(fn ($key) => [
+                    $key => array_key_exists($key, $this->Headers) ? $this->Headers[$key] : null
+                ], $Use));
+            case 'string':
+                return $this->Headers[$Use] ?? null;
+            default:
+                return $this->Headers;
+        }
+    }
+    public function has(array|string $Use): array | bool {
+        switch(gettype($Use)) {
+            case 'array':
+                return call_user_func_array('array_merge', array_map(fn ($key) => [$key => array_key_exists($key, $this->Headers)], $Use));
+            case 'string':
+                return array_key_exists($Use, $this->Headers);
+        }
     }
     public function filter(array $Filter): self {
         $this->Headers = array_diff_key($this->Headers, array_change_key_case(array_fill_keys($Filter, null)));
@@ -138,6 +155,9 @@ class Headers {
     public function replace(array $Replace): self {
         $this->Headers = array_replace($this->Headers, array_change_key_case($Replace));
         return $this;
+    }
+    public function size(): int { 
+        return sizeof($this->Headers);
     }
 }
 ?>
