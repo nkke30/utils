@@ -4,6 +4,7 @@ namespace Nickimbo\Utils\Validator;
 
 use Nickimbo\Utils\Interfaces\ValidatorInterface;
 use Nickimbo\Utils\Interfaces\RuleInterface;
+use Nickimbo\Utils\Validator\Exceptions;
 
 class Validator implements ValidatorInterface {
     private ?array $errors = null;
@@ -15,6 +16,8 @@ class Validator implements ValidatorInterface {
     private array $fields;
 
     private array $rules;
+
+    private string $method = 'ANY';
 
     public function __construct(array $Body) {
 
@@ -31,7 +34,13 @@ class Validator implements ValidatorInterface {
         $this->rules = $Rules;
         return $this;
     }
+    public function setMethod(string $Method): self {
+        if(!in_array(strtolower($Method), ['get', 'post', 'put', 'connect', 'trace', 'patch', 'delete', 'head', 'options', 'any'])) throw new Exceptions\InvalidMethod($Method);
 
+        $this->method = strtoupper($Method);
+
+        return $this;
+    }
     public function run(): void {
 
         if(!is_array($this->errors)) $this->errors = array();
@@ -39,6 +48,16 @@ class Validator implements ValidatorInterface {
         $needCount = 0;
 
         $validCount = 0;
+
+
+        if($this->method !== 'ANY') {
+
+            $needCount++;
+
+            if(array_key_exists('REQUEST_METHOD', $_SERVER)) {
+                if($_SERVER['REQUEST_METHOD'] === $this->method) $validCount++;
+            } 
+        }
 
         foreach ($this->fields as $Key => $Field):
 
