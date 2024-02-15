@@ -55,7 +55,7 @@ class Validator implements ValidatorInterface {
             $needCount++;
 
             if(array_key_exists('REQUEST_METHOD', $_SERVER)) {
-                if($_SERVER['REQUEST_METHOD'] === $this->method) $validCount++;
+                if(strtolower($_SERVER['REQUEST_METHOD']) == strtolower($this->method)) $validCount++;
                 else $this->errors[] = [
                     'field' => 'CONSTRUCTOR::setMethod',
                     'value' => $this->method,
