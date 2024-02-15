@@ -56,6 +56,12 @@ class Validator implements ValidatorInterface {
 
             if(array_key_exists('REQUEST_METHOD', $_SERVER)) {
                 if($_SERVER['REQUEST_METHOD'] === $this->method) $validCount++;
+                else $this->errors[] = [
+                    'field' => 'CONSTRUCTOR::setMethod',
+                    'value' => $this->method,
+                    'reason' => 'request method does not match required method',
+                    'rule' => null
+                ];
             } 
         }
 
